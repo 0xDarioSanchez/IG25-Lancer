@@ -1,0 +1,3 @@
+[submodule "packages/cargo-stylus/lancer"]
+	path = packages/cargo-stylus/lancer
+	url = https://github.com/abhi152003/lancer.git
