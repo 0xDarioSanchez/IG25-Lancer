@@ -1,12 +1,12 @@
 [package]
-name = "stylus-hello-world"
+name = "lancer"
 version = "0.1.9"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/OffchainLabs/stylus-hello-world"
-repository = "https://github.com/OffchainLabs/stylus-hello-world"
+homepage = "https://github.com/0xDarioSanchez/IG25-Lancer"
+repository = "https://github.com/0xDarioSanchez/IG25-Lancer"
 keywords = ["arbitrum", "ethereum", "stylus", "alloy"]
-description = "Stylus hello world example"
+description = "Lancer Protocol - Decentralized marketplace with dispute resolution"
 
 [dependencies]
 alloy-primitives = "=0.7.6"
@@ -26,7 +26,7 @@ export-abi = ["stylus-sdk/export-abi"]
 debug = ["stylus-sdk/debug"]
 
 [[bin]]
-name = "stylus-hello-world"
+name = "lancer"
 path = "src/main.rs"
 
 [lib]

@@ -13,5 +13,7 @@
 
 #![cfg_attr(not(feature = "export-abi"), no_main)]
 
-pub mod marketplace;
+// Only one entrypoint can be active at a time
+// Comment/uncomment to switch between contracts
+// pub mod marketplace;
 pub mod protocol;

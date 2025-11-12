@@ -13,12 +13,16 @@
 extern crate alloc;
 
 use alloc::string::String;
+use alloc::vec::Vec;
+use alloy_sol_types::sol;
 use stylus_sdk::{
-    alloy_primitives::{Address, U256, U64, U32, U8, I8},
+    alloy_primitives::{Address, U256, U64, U32, U8, I8, FixedBytes},
     prelude::*,
     call::Call,
+    contract,
     evm,
     msg,
+    crypto::keccak,
 };
 
 // ====================================
@@ -55,7 +59,11 @@ sol_storage! {
         uint256 able_to_vote_count;
         mapping(uint256 => address) voters;
         uint256 voters_count;
-        mapping(uint256 => bool) votes;
+        mapping(uint256 => bytes32) vote_commits; // hash(vote, secret)
+        mapping(uint256 => bool) revealed;
+        mapping(uint256 => bool) vote_plain;      // real vote revealed later
+        uint256 commits_count;
+        uint256 reveals_count;
         uint8 votes_for;
         uint8 votes_against;
         bool waiting_for_judges;
@@ -78,7 +86,6 @@ sol! {
     error NotAJudge();
     error NotTheRequester();
     error ProofCannotBeEmpty();
-    error DisputeResolved();
     error NotTheBeneficiary();
     error NotEnoughReputation();
     error JudgesAlreadyAssigned();
@@ -104,7 +111,6 @@ pub enum ProtocolError {
     NotAJudge(NotAJudge),
     NotTheRequester(NotTheRequester),
     ProofCannotBeEmpty(ProofCannotBeEmpty),
-    DisputeResolved(DisputeResolved),
     NotTheBeneficiary(NotTheBeneficiary),
     NotEnoughReputation(NotEnoughReputation),
     JudgesAlreadyAssigned(JudgesAlreadyAssigned),
@@ -118,6 +124,10 @@ pub enum ProtocolError {
     NoBalanceToWithdraw(NoBalanceToWithdraw),
     NoUSDCToWithdraw(NoUSDCToWithdraw),
     CallFailed(CallFailed),
+}
+
+sol! {
+    error CallFailed();
 }
 
 // Implement From for stylus_sdk::call::Error
@@ -202,7 +212,7 @@ impl ProtocolContract {
         let usdc = self.usdc_token.get();
         let token = IERC20::new(usdc);
         let call = Call::new_in(self);
-        let balance = token.balance_of(call, evm::contract_address())?;
+        let balance = token.balance_of(call, contract::address())?;
         
         let contract_balance = self.contract_balance.get();
         
@@ -303,7 +313,7 @@ impl ProtocolContract {
         }
         
         if dispute.resolved.get() {
-            return Err(ProtocolError::DisputeResolved(DisputeResolved {}));
+            return Err(ProtocolError::DisputeAlreadyResolved(DisputeAlreadyResolved {}));
         }
         
         // Note: In production, you'd store the proof in storage or emit an event
@@ -330,7 +340,7 @@ impl ProtocolContract {
         }
         
         if dispute.resolved.get() {
-            return Err(ProtocolError::DisputeResolved(DisputeResolved {}));
+            return Err(ProtocolError::DisputeAlreadyResolved(DisputeAlreadyResolved {}));
         }
         
         // Note: Store proof or emit event in production
@@ -384,140 +394,285 @@ impl ProtocolContract {
         Ok(())
     }
     
-    /// Vote on a dispute
-    pub fn vote(&mut self, dispute_id: u64, support: bool) -> Result<(), ProtocolError> {
-        let sender = msg::sender();
-        let dispute = self.disputes.get(U64::from(dispute_id));
+    // /// Vote on a dispute
+    // pub fn vote(&mut self, dispute_id: u64, support: bool) -> Result<(), ProtocolError> {
+    //     let sender = msg::sender();
+    //     let dispute = self.disputes.get(U64::from(dispute_id));
         
+    //     if dispute.resolved.get() {
+    //         return Err(ProtocolError::DisputeAlreadyResolved(DisputeAlreadyResolved {}));
+    //     }
+        
+    //     if !dispute.is_open.get() {
+    //         return Err(ProtocolError::DisputeNotOpen(DisputeNotOpen {}));
+    //     }
+        
+    //     // Check if judge is able to vote
+    //     let mut found = false;
+    //     let able_count = dispute.able_to_vote_count.get();
+    //     for i in 0..able_count.as_limbs()[0] {
+    //         let judge_addr = dispute.able_to_vote.get(U256::from(i));
+    //         if judge_addr == sender {
+    //             found = true;
+    //             break;
+    //         }
+    //     }
+        
+    //     if !found {
+    //         return Err(ProtocolError::JudgeNotAllowedToVote(JudgeNotAllowedToVote {}));
+    //     }
+        
+    //     // Check if already voted
+    //     let voters_count = dispute.voters_count.get();
+    //     for i in 0..voters_count.as_limbs()[0] {
+    //         let voter = dispute.voters.get(U256::from(i));
+    //         if voter == sender {
+    //             return Err(ProtocolError::JudgeAlreadyVoted(JudgeAlreadyVoted {}));
+    //         }
+    //     }
+        
+    //     // Record vote
+    //     let mut dispute_mut = self.disputes.setter(U64::from(dispute_id));
+    //     let current_voters = dispute_mut.voters_count.get();
+    //     dispute_mut.voters.setter(current_voters).set(sender);
+    //     dispute_mut.votes.setter(current_voters).set(support);
+    //     let new_voters_count = current_voters + U256::from(1u64);
+    //     dispute_mut.voters_count.set(new_voters_count);
+        
+    //     if support {
+    //         let current_for = dispute_mut.votes_for.get();
+    //         dispute_mut.votes_for.set(current_for + U8::from(1));
+    //     } else {
+    //         let current_against = dispute_mut.votes_against.get();
+    //         dispute_mut.votes_against.set(current_against + U8::from(1));
+    //     }
+        
+    //     // Check if all votes are in
+    //     let required_votes = self.number_of_votes.get();
+    //     let required_votes_u64 = u64::from_le_bytes(required_votes.to_le_bytes());
+        
+    //     if new_voters_count == U256::from(required_votes_u64) {
+    //         dispute_mut.is_open.set(false);
+    //         dispute_mut.resolved.set(true);
+            
+    //         let votes_for = u8::from_le_bytes(dispute_mut.votes_for.get().to_le_bytes());
+    //         let votes_against = u8::from_le_bytes(dispute_mut.votes_against.get().to_le_bytes());
+            
+    //         let dispute_price = self.dispute_price.get();
+    //         let prize = dispute_price / U256::from(required_votes_u64);
+            
+    //         let requester = dispute_mut.requester.get();
+    //         let beneficiary = dispute_mut.beneficiary.get();
+            
+    //         // Distribute rewards and update reputation
+    //         if votes_for > votes_against {
+    //             // Requester wins
+    //             for i in 0..new_voters_count.as_limbs()[0] {
+    //                 let voter = dispute_mut.voters.get(U256::from(i));
+    //                 let vote = dispute_mut.votes.get(U256::from(i));
+                    
+    //                 let mut judge = self.judges.setter(voter);
+    //                 let current_rep = judge.reputation.get();
+                    
+    //                 if vote {
+    //                     // Voted for winner
+    //                     judge.reputation.set(current_rep + I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+    //                     let current_balance = judge.balance.get();
+    //                     judge.balance.set(current_balance + prize);
+    //                 } else {
+    //                     // Voted for loser
+    //                     judge.reputation.set(current_rep - I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+    //                 }
+    //             }
+                
+    //             // Contract keeps losing votes' prizes
+    //             let contract_reward = prize * U256::from(votes_against as u64);
+    //             let current_contract_balance = self.contract_balance.get();
+    //             self.contract_balance.set(current_contract_balance + contract_reward);
+                
+    //             evm::log(DisputeResolved {
+    //                 dispute_id: U256::from(dispute_id),
+    //                 winner: requester,
+    //             });
+    //         } else {
+    //             // Beneficiary wins
+    //             for i in 0..new_voters_count.as_limbs()[0] {
+    //                 let voter = dispute_mut.voters.get(U256::from(i));
+    //                 let vote = dispute_mut.votes.get(U256::from(i));
+                    
+    //                 let mut judge = self.judges.setter(voter);
+    //                 let current_rep = judge.reputation.get();
+                    
+    //                 if !vote {
+    //                     // Voted for winner
+    //                     judge.reputation.set(current_rep + I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+    //                     let current_balance = judge.balance.get();
+    //                     judge.balance.set(current_balance + prize);
+    //                 } else {
+    //                     // Voted for loser
+    //                     judge.reputation.set(current_rep - I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+    //                 }
+    //             }
+                
+    //             // Contract keeps losing votes' prizes
+    //             let contract_reward = prize * U256::from(votes_for as u64);
+    //             let current_contract_balance = self.contract_balance.get();
+    //             self.contract_balance.set(current_contract_balance + contract_reward);
+                
+    //             evm::log(DisputeResolved {
+    //                 dispute_id: U256::from(dispute_id),
+    //                 winner: beneficiary,
+    //             });
+    //         }
+    //     }
+        
+    //     Ok(())
+    // }
+    
+
+    pub fn commit_vote(&mut self, dispute_id: u64, commit_hash: [u8; 32]) -> Result<(), ProtocolError> {
+        let sender = msg::sender();
+        let mut dispute = self.disputes.setter(U64::from(dispute_id));
+
         if dispute.resolved.get() {
             return Err(ProtocolError::DisputeAlreadyResolved(DisputeAlreadyResolved {}));
         }
-        
         if !dispute.is_open.get() {
             return Err(ProtocolError::DisputeNotOpen(DisputeNotOpen {}));
         }
-        
-        // Check if judge is able to vote
-        let mut found = false;
-        let able_count = dispute.able_to_vote_count.get();
-        for i in 0..able_count.as_limbs()[0] {
-            let judge_addr = dispute.able_to_vote.get(U256::from(i));
-            if judge_addr == sender {
-                found = true;
+
+        // Check if judge is allowed
+        let mut allowed = false;
+        let count = dispute.able_to_vote_count.get();
+        for i in 0..count.as_limbs()[0] {
+            let addr = dispute.able_to_vote.get(U256::from(i));
+            if addr == sender {
+                allowed = true;
                 break;
             }
         }
-        
-        if !found {
+        if !allowed {
             return Err(ProtocolError::JudgeNotAllowedToVote(JudgeNotAllowedToVote {}));
         }
-        
-        // Check if already voted
-        let voters_count = dispute.voters_count.get();
-        for i in 0..voters_count.as_limbs()[0] {
-            let voter = dispute.voters.get(U256::from(i));
-            if voter == sender {
+
+        // Check not already committed
+        let commits = dispute.commits_count.get();
+        for i in 0..commits.as_limbs()[0] {
+            if dispute.voters.get(U256::from(i)) == sender {
                 return Err(ProtocolError::JudgeAlreadyVoted(JudgeAlreadyVoted {}));
             }
         }
-        
-        // Record vote
-        let mut dispute_mut = self.disputes.setter(U64::from(dispute_id));
-        let current_voters = dispute_mut.voters_count.get();
-        dispute_mut.voters.setter(current_voters).set(sender);
-        dispute_mut.votes.setter(current_voters).set(support);
-        let new_voters_count = current_voters + U256::from(1u64);
-        dispute_mut.voters_count.set(new_voters_count);
-        
-        if support {
-            let current_for = dispute_mut.votes_for.get();
-            dispute_mut.votes_for.set(current_for + U8::from(1));
-        } else {
-            let current_against = dispute_mut.votes_against.get();
-            dispute_mut.votes_against.set(current_against + U8::from(1));
-        }
-        
-        // Check if all votes are in
-        let required_votes = self.number_of_votes.get();
-        let required_votes_u64 = u64::from_le_bytes(required_votes.to_le_bytes());
-        
-        if new_voters_count == U256::from(required_votes_u64) {
-            dispute_mut.is_open.set(false);
-            dispute_mut.resolved.set(true);
-            
-            let votes_for = u8::from_le_bytes(dispute_mut.votes_for.get().to_le_bytes());
-            let votes_against = u8::from_le_bytes(dispute_mut.votes_against.get().to_le_bytes());
-            
-            let dispute_price = self.dispute_price.get();
-            let prize = dispute_price / U256::from(required_votes_u64);
-            
-            let requester = dispute_mut.requester.get();
-            let beneficiary = dispute_mut.beneficiary.get();
-            
-            // Distribute rewards and update reputation
-            if votes_for > votes_against {
-                // Requester wins
-                for i in 0..new_voters_count.as_limbs()[0] {
-                    let voter = dispute_mut.voters.get(U256::from(i));
-                    let vote = dispute_mut.votes.get(U256::from(i));
-                    
-                    let mut judge = self.judges.setter(voter);
-                    let current_rep = judge.reputation.get();
-                    
-                    if vote {
-                        // Voted for winner
-                        judge.reputation.set(current_rep + I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
-                        let current_balance = judge.balance.get();
-                        judge.balance.set(current_balance + prize);
-                    } else {
-                        // Voted for loser
-                        judge.reputation.set(current_rep - I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
-                    }
-                }
-                
-                // Contract keeps losing votes' prizes
-                let contract_reward = prize * U256::from(votes_against as u64);
-                let current_contract_balance = self.contract_balance.get();
-                self.contract_balance.set(current_contract_balance + contract_reward);
-                
-                evm::log(DisputeResolved {
-                    dispute_id: U256::from(dispute_id),
-                    winner: requester,
-                });
-            } else {
-                // Beneficiary wins
-                for i in 0..new_voters_count.as_limbs()[0] {
-                    let voter = dispute_mut.voters.get(U256::from(i));
-                    let vote = dispute_mut.votes.get(U256::from(i));
-                    
-                    let mut judge = self.judges.setter(voter);
-                    let current_rep = judge.reputation.get();
-                    
-                    if !vote {
-                        // Voted for winner
-                        judge.reputation.set(current_rep + I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
-                        let current_balance = judge.balance.get();
-                        judge.balance.set(current_balance + prize);
-                    } else {
-                        // Voted for loser
-                        judge.reputation.set(current_rep - I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
-                    }
-                }
-                
-                // Contract keeps losing votes' prizes
-                let contract_reward = prize * U256::from(votes_for as u64);
-                let current_contract_balance = self.contract_balance.get();
-                self.contract_balance.set(current_contract_balance + contract_reward);
-                
-                evm::log(DisputeResolved {
-                    dispute_id: U256::from(dispute_id),
-                    winner: beneficiary,
-                });
-            }
-        }
-        
+
+        // Store commit
+        dispute.voters.setter(commits).set(sender);
+        dispute.vote_commits.setter(commits).set(FixedBytes::from(commit_hash));
+        dispute.commits_count.set(commits + U256::from(1u64));
+
         Ok(())
     }
+
+
+    pub fn reveal_votes(
+        &mut self,
+        dispute_id: u64,
+        votes: Vec<bool>,
+        secrets: Vec<[u8; 32]>
+    ) -> Result<(), ProtocolError> {
+        let mut dispute = self.disputes.setter(U64::from(dispute_id));
+
+        if dispute.resolved.get() {
+            return Err(ProtocolError::DisputeAlreadyResolved(DisputeAlreadyResolved {}));
+        }
+
+        let commit_count = dispute.commits_count.get();
+        let num_votes = u64::try_from(commit_count.as_limbs()[0]).unwrap_or(0);
+        if votes.len() as u64 != num_votes || secrets.len() as u64 != num_votes {
+            return Err(ProtocolError::MustBeGreaterThanZero(MustBeGreaterThanZero {}));
+        }
+
+        let mut votes_for = 0u8;
+        let mut votes_against = 0u8;
+
+        // Verify all hashes
+        for i in 0..num_votes {
+            let idx = i as usize;
+            let commit = dispute.vote_commits.get(U256::from(i));
+            
+            // Compute keccak256(vote, secret)
+            let mut data = Vec::new();
+            data.push(if votes[idx] { 1u8 } else { 0u8 });
+            data.extend_from_slice(secrets[idx].as_slice());
+            let recomputed = keccak(data.as_slice());
+
+            if commit != recomputed {
+                return Err(ProtocolError::ProofCannotBeEmpty(ProofCannotBeEmpty {}));
+            }
+
+            dispute.vote_plain.setter(U256::from(i)).set(votes[idx]);
+            if votes[idx] {
+                votes_for += 1;
+            } else {
+                votes_against += 1;
+            }
+        }
+
+        dispute.is_open.set(false);
+        dispute.resolved.set(true);
+
+        // Apply same logic as your original vote() function
+        // distribute rewards based on majority
+        let required_votes = self.number_of_votes.get();
+        let required_votes_u64 = u64::from_le_bytes(required_votes.to_le_bytes());
+        let prize = self.dispute_price.get() / U256::from(required_votes_u64);
+
+        let requester = dispute.requester.get();
+        let beneficiary = dispute.beneficiary.get();
+
+        if votes_for > votes_against {
+            for i in 0..num_votes {
+                let voter = dispute.voters.get(U256::from(i));
+                let vote = dispute.vote_plain.get(U256::from(i));
+                let mut judge = self.judges.setter(voter);
+                let rep = judge.reputation.get();
+
+                if vote {
+                    judge.reputation.set(rep + I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+                    let bal = judge.balance.get();
+                    judge.balance.set(bal + prize);
+                } else {
+                    judge.reputation.set(rep - I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+                }
+            }
+
+            evm::log(DisputeResolved {
+                dispute_id: U256::from(dispute_id),
+                winner: requester,
+            });
+        } else {
+            for i in 0..num_votes {
+                let voter = dispute.voters.get(U256::from(i));
+                let vote = dispute.vote_plain.get(U256::from(i));
+                let mut judge = self.judges.setter(voter);
+                let rep = judge.reputation.get();
+
+                if !vote {
+                    judge.reputation.set(rep + I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+                    let bal = judge.balance.get();
+                    judge.balance.set(bal + prize);
+                } else {
+                    judge.reputation.set(rep - I8::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0]));
+                }
+            }
+
+            evm::log(DisputeResolved {
+                dispute_id: U256::from(dispute_id),
+                winner: beneficiary,
+            });
+        }
+
+        Ok(())
+    }
+
     
     /// Execute dispute result (called by Marketplace)
     pub fn execute_dispute_result(&self, dispute_id: u64) -> Result<bool, ProtocolError> {

@@ -1905,6 +1905,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f35c735096c0293d313e8f2a641627472b83d01b937177fe76e5e2708d31e0d"
 
 [[package]]
+name = "lancer"
+version = "0.1.9"
+dependencies = [
+ "alloy-primitives",
+ "alloy-sol-types",
+ "dotenv",
+ "ethers",
+ "eyre",
+ "hex",
+ "mini-alloc 0.4.2",
+ "stylus-sdk",
+ "tokio",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3232,21 +3247,6 @@ dependencies = [
  "quote",
  "rustversion",
  "syn 2.0.50",
-]
-
-[[package]]
-name = "stylus-hello-world"
-version = "0.1.9"
-dependencies = [
- "alloy-primitives",
- "alloy-sol-types",
- "dotenv",
- "ethers",
- "eyre",
- "hex",
- "mini-alloc 0.4.2",
- "stylus-sdk",
- "tokio",
 ]
 
 [[package]]

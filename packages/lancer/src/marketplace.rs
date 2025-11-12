@@ -14,11 +14,13 @@
 extern crate alloc;
 
 use alloc::string::String;
+use alloy_sol_types::sol;
 use stylus_sdk::{
     alloy_primitives::{Address, U256, U64, U8, I8},
     prelude::*,
     block,
     call::Call,
+    contract,
     evm,
     msg,
 };
@@ -362,8 +364,9 @@ impl Marketplace {
         deal.accepted.set(false);
         deal.disputed.set(false);
         
+        let deal_id_u64 = u64::from_le_bytes(deal_id.to_le_bytes());
         evm::log(DealCreated {
-            deal_id,
+            deal_id: deal_id_u64,
             payer,
             beneficiary: sender,
             amount,
@@ -484,7 +487,7 @@ impl Marketplace {
         // Transfer USDC from payer to contract
         let token = IERC20::new(usdc);
         let call = Call::new_in(self);
-        let success = token.transfer_from(call, sender, evm::contract_address(), amount)?;
+        let success = token.transfer_from(call, sender, contract::address(), amount)?;
         
         if !success {
             return Err(MarketplaceError::CallFailed(CallFailed {}));
@@ -656,26 +659,30 @@ impl Marketplace {
         proof: String,
     ) -> Result<(), MarketplaceError> {
         let sender = msg::sender();
-        let mut deal = self.deals.setter(U256::from(deal_id));
         
-        // Check deal exists
-        if deal.amount.get() == U256::ZERO {
-            return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
-        }
-        
-        // Only payer can request dispute
-        if sender != deal.payer.get() {
-            return Err(MarketplaceError::NotPayer(NotPayer {}));
-        }
-        
-        // Check deal is accepted
-        if !deal.accepted.get() {
-            return Err(MarketplaceError::DealNotAccepted(DealNotAccepted {}));
-        }
-        
-        // Check not already disputed
-        if deal.disputed.get() {
-            return Err(MarketplaceError::DealAlreadyDisputed(DealAlreadyDisputed {}));
+        // Validate deal first (using immutable borrow)
+        {
+            let deal = self.deals.get(U256::from(deal_id));
+            
+            // Check deal exists
+            if deal.amount.get() == U256::ZERO {
+                return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+            }
+            
+            // Only payer can request dispute
+            if sender != deal.payer.get() {
+                return Err(MarketplaceError::NotPayer(NotPayer {}));
+            }
+            
+            // Check deal is accepted
+            if !deal.accepted.get() {
+                return Err(MarketplaceError::DealNotAccepted(DealNotAccepted {}));
+            }
+            
+            // Check not already disputed
+            if deal.disputed.get() {
+                return Err(MarketplaceError::DealAlreadyDisputed(DealAlreadyDisputed {}));
+            }
         }
         
         let usdc = self.usdc_token.get();
@@ -692,7 +699,9 @@ impl Marketplace {
         }
         
         // Mark deal as disputed
+        let mut deal = self.deals.setter(U256::from(deal_id));
         deal.disputed.set(true);
+        drop(deal); // Explicitly drop to release borrow
         
         // Call protocol to create dispute
         let protocol = IProtocol::new(protocol_addr);
@@ -784,19 +793,25 @@ impl Marketplace {
         deal_id: u64,
     ) -> Result<(), MarketplaceError> {
         let sender = msg::sender();
-        let dispute = self.disputes.get(U64::from(dispute_id));
         
-        // Check dispute exists
-        if dispute.deal_id.get() == U64::ZERO {
-            return Err(MarketplaceError::DisputeDoesNotExist(DisputeDoesNotExist {}));
-        }
-        
-        let deal = self.deals.get(U256::from(deal_id));
-        
-        // Only involved parties can execute
-        if sender != dispute.requester.get() && sender != deal.beneficiary.get() {
-            return Err(MarketplaceError::OnlyInvolvedPartiesCanExecute(OnlyInvolvedPartiesCanExecute {}));
-        }
+        // Validate and get values (using immutable borrows)
+        let (amount, fee_percent, requester, beneficiary) = {
+            let dispute = self.disputes.get(U64::from(dispute_id));
+            
+            // Check dispute exists
+            if dispute.deal_id.get() == U64::ZERO {
+                return Err(MarketplaceError::DisputeDoesNotExist(DisputeDoesNotExist {}));
+            }
+            
+            let deal = self.deals.get(U256::from(deal_id));
+            
+            // Only involved parties can execute
+            if sender != dispute.requester.get() && sender != deal.beneficiary.get() {
+                return Err(MarketplaceError::OnlyInvolvedPartiesCanExecute(OnlyInvolvedPartiesCanExecute {}));
+            }
+            
+            (deal.amount.get(), self.fee_percent.get(), dispute.requester.get(), deal.beneficiary.get())
+        };
         
         // Get dispute result from protocol
         let protocol_addr = self.protocol.get();
@@ -804,18 +819,15 @@ impl Marketplace {
         let call = Call::new_in(self);
         let winner = protocol.execute_dispute_result(call, dispute_id)?;
         
-        let amount = deal.amount.get();
-        let fee_percent = self.fee_percent.get();
-        
         // Calculate payout
         let fee = amount * U256::from(fee_percent) / U256::from(100u64);
         let payout = amount - fee;
         
         // Determine winner address
         let winner_address = if winner {
-            deal.payer.get()
+            requester
         } else {
-            deal.beneficiary.get()
+            beneficiary
         };
         
         // Update winner balance
