@@ -52,7 +52,8 @@ JUDGE5_KEY="0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6"
 JUDGE5_ADDR=$(cast wallet address --private-key $JUDGE5_KEY)
 
 # USDC Mock Token (deployed Stylus contract)
-USDC_ADDRESS="0xe1080224b632a93951a7cfa33eeea9fd81558b5e"  # Mock USDC deployed contract
+# Read USDC address from deployment file
+USDC_ADDRESS=$(cat "$DEPLOYMENT_FILE" | jq -r '.usdc_contract.address')
 
 echo "=========================================="
 echo "📋 STEP 0: Fund Test Accounts"
@@ -419,40 +420,40 @@ echo "=========================================="
 
 echo "Judge 1 revealing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,string)" \
-    $DISPUTE_ID $JUDGE1_VOTE "$JUDGE1_SECRET" \
+    "revealVotes(uint64,bool,bytes)" \
+    $DISPUTE_ID $JUDGE1_VOTE "$(cast --from-utf8 "$JUDGE1_SECRET")" \
     --private-key $JUDGE1_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 2 revealing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,string)" \
-    $DISPUTE_ID $JUDGE2_VOTE "$JUDGE2_SECRET" \
+    "revealVotes(uint64,bool,bytes)" \
+    $DISPUTE_ID $JUDGE2_VOTE "$(cast --from-utf8 "$JUDGE2_SECRET")" \
     --private-key $JUDGE2_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 3 revealing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,string)" \
-    $DISPUTE_ID $JUDGE3_VOTE "$JUDGE3_SECRET" \
+    "revealVotes(uint64,bool,bytes)" \
+    $DISPUTE_ID $JUDGE3_VOTE "$(cast --from-utf8 "$JUDGE3_SECRET")" \
     --private-key $JUDGE3_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 4 revealing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,string)" \
-    $DISPUTE_ID $JUDGE4_VOTE "$JUDGE4_SECRET" \
+    "revealVotes(uint64,bool,bytes)" \
+    $DISPUTE_ID $JUDGE4_VOTE "$(cast --from-utf8 "$JUDGE4_SECRET")" \
     --private-key $JUDGE4_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 5 revealing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,string)" \
-    $DISPUTE_ID $JUDGE5_VOTE "$JUDGE5_SECRET" \
+    "revealVotes(uint64,bool,bytes)" \
+    $DISPUTE_ID $JUDGE5_VOTE "$(cast --from-utf8 "$JUDGE5_SECRET")" \
     --private-key $JUDGE5_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000

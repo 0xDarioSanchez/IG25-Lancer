@@ -577,7 +577,7 @@ impl ProtocolContract {
         &mut self,
         dispute_id: u64,
         vote: bool,
-        secret: String
+        secret: Vec<u8>
     ) -> Result<(), ProtocolError> {
         let sender = msg::sender();
         let mut dispute = self.disputes.setter(U64::from(dispute_id));
@@ -614,7 +614,7 @@ impl ProtocolContract {
         // Compute keccak256(vote || secret)
         let mut data = Vec::new();
         data.extend_from_slice(if vote { "true" } else { "false" }.as_bytes());
-        data.extend_from_slice(secret.as_bytes());
+        data.extend_from_slice(&secret);
         let recomputed = keccak(data.as_slice());
 
         if stored_commit != recomputed {
