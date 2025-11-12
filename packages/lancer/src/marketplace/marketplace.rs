@@ -283,9 +283,10 @@ impl Marketplace {
     }
     
     /// Create a new deal
+    /// Sender (payer/buyer) creates a deal with a beneficiary (seller)
     pub fn create_deal(
         &mut self,
-        payer: Address,
+        beneficiary: Address,
         amount: U256,
         duration: u64,
     ) -> Result<(), MarketplaceError> {
@@ -295,29 +296,42 @@ impl Marketplace {
         if amount == U256::ZERO {
             return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
-        if payer == Address::ZERO {
+        if beneficiary == Address::ZERO {
             return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
-        // Check user roles
+        // Check user roles - sender must be a payer (buyer)
         let sender_user = self.users.get(sender);
-        if !sender_user.is_beneficiary.get() {
+        if !sender_user.is_payer.get() {
             return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
-        let payer_user = self.users.get(payer);
-        if !payer_user.is_payer.get() {
+        // Beneficiary must be registered as beneficiary (seller)
+        let beneficiary_user = self.users.get(beneficiary);
+        if !beneficiary_user.is_beneficiary.get() {
             return Err(MarketplaceError::InvalidState(InvalidState {}));
+        }
+        
+        // Transfer USDC from payer to marketplace contract
+        let token_address = self.usdc_token.get();
+        let config = Call::new_in(self);
+        let token = IERC20::new(token_address);
+        let contract_addr = contract::address();
+        
+        // Transfer tokens from sender (payer) to this contract
+        match token.transfer_from(config, sender, contract_addr, amount) {
+            Ok(_) => {},
+            Err(_) => return Err(MarketplaceError::CallFailed(CallFailed {})),
         }
         
         // Get current deal ID
         let deal_id = self.deal_id_counter.get();
         
-        // Create deal
+        // Create deal - sender is payer, beneficiary is the seller
         let mut deal = self.deals.setter(U256::from(deal_id));
         deal.deal_id.set(U64::from(deal_id));
-        deal.payer.set(payer);
-        deal.beneficiary.set(sender);
+        deal.payer.set(sender);  // Sender is the payer (buyer)
+        deal.beneficiary.set(beneficiary);  // Parameter is beneficiary (seller)
         deal.amount.set(amount);
         deal.duration.set(U64::from(duration));
         deal.started_at.set(U256::ZERO);
@@ -327,8 +341,8 @@ impl Marketplace {
         let deal_id_u64 = u64::from_le_bytes(deal_id.to_le_bytes());
         evm::log(DealCreated {
             deal_id: deal_id_u64,
-            payer,
-            beneficiary: sender,
+            payer: sender,  // Sender is the payer
+            beneficiary,  // Beneficiary is the seller
             amount,
         });
         
@@ -418,6 +432,8 @@ impl Marketplace {
     }
     
     /// Accept a deal and transfer funds to contract
+    /// Accept a deal (only beneficiary can accept)
+    /// USDC was already transferred when deal was created, so just mark as accepted
     pub fn accept_deal(&mut self, deal_id: u64) -> Result<(), MarketplaceError> {
         let sender = msg::sender();
         let mut deal = self.deals.setter(U256::from(deal_id));
@@ -427,8 +443,8 @@ impl Marketplace {
             return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
-        // Only payer can accept
-        if sender != deal.payer.get() {
+        // Only beneficiary (seller) can accept
+        if sender != deal.beneficiary.get() {
             return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
@@ -437,21 +453,9 @@ impl Marketplace {
             return Err(MarketplaceError::AlreadyExists(AlreadyExists {}));
         }
         
-        let amount = deal.amount.get();
-        let usdc = self.usdc_token.get();
-        
-        // Mark as accepted
+        // Mark as accepted and set start time
         deal.accepted.set(true);
         deal.started_at.set(U256::from(block::timestamp()));
-        
-        // Transfer USDC from payer to contract
-        let token = IERC20::new(usdc);
-        let call = Call::new_in(self);
-        let success = token.transfer_from(call, sender, contract::address(), amount)?;
-        
-        if !success {
-            return Err(MarketplaceError::CallFailed(CallFailed {}));
-        }
         
         evm::log(DealAccepted { deal_id });
         
@@ -613,6 +617,16 @@ impl Marketplace {
     }
     
     /// Request a dispute for a deal
+    /// Create/Request a dispute for a deal
+    /// Buyer must approve marketplace to spend 50 USDC dispute fee before calling this
+    pub fn create_dispute(
+        &mut self,
+        deal_id: u64,
+        proof: String,
+    ) -> Result<(), MarketplaceError> {
+        self.request_dispute(deal_id, proof)
+    }
+    
     pub fn request_dispute(
         &mut self,
         deal_id: u64,

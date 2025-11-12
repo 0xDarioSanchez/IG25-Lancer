@@ -45,42 +45,61 @@ JUDGE2_ADDR=$(cast wallet address --private-key $JUDGE2_KEY)
 JUDGE3_KEY="0x4bbbf85ce3377467afe5d46f804f221813b2bb87f24d81f60f1fcdbf7cbf4356"
 JUDGE3_ADDR=$(cast wallet address --private-key $JUDGE3_KEY)
 
-# USDC Mock Token (using a placeholder address for testing)
-USDC_ADDRESS="0x1111111111111111111111111111111111111111"  # Mock USDC
+JUDGE4_KEY="0xdbda1821b80551c9d65939329250298aa3472ba22feea921c0cf5d620ea67b97"
+JUDGE4_ADDR=$(cast wallet address --private-key $JUDGE4_KEY)
+
+JUDGE5_KEY="0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6"
+JUDGE5_ADDR=$(cast wallet address --private-key $JUDGE5_KEY)
+
+# USDC Mock Token (deployed Stylus contract)
+USDC_ADDRESS="0xe1080224b632a93951a7cfa33eeea9fd81558b5e"  # Mock USDC deployed contract
 
 echo "=========================================="
 echo "📋 STEP 0: Fund Test Accounts"
 echo "=========================================="
+echo "✅ Skipping funding (accounts pre-funded)"
 
-echo "Funding Buyer: $BUYER_ADDR"
-cast send $BUYER_ADDR \
-    --value 10ether \
-    --private-key $OWNER_KEY \
-    --rpc-url $RPC_URL
+# echo "Funding Buyer: $BUYER_ADDR"
+# cast send $BUYER_ADDR \
+#     --value 10ether \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL
 
-echo "Funding Seller: $SELLER_ADDR"
-cast send $SELLER_ADDR \
-    --value 10ether \
-    --private-key $OWNER_KEY \
-    --rpc-url $RPC_URL
+# echo "Funding Seller: $SELLER_ADDR"
+# cast send $SELLER_ADDR \
+#     --value 10ether \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL
 
-echo "Funding Judge 1: $JUDGE1_ADDR"
-cast send $JUDGE1_ADDR \
-    --value 10ether \
-    --private-key $OWNER_KEY \
-    --rpc-url $RPC_URL
+# echo "Funding Judge 1: $JUDGE1_ADDR"
+# cast send $JUDGE1_ADDR \
+#     --value 10ether \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL
 
-echo "Funding Judge 2: $JUDGE2_ADDR"
-cast send $JUDGE2_ADDR \
-    --value 10ether \
-    --private-key $OWNER_KEY \
-    --rpc-url $RPC_URL
+# echo "Funding Judge 2: $JUDGE2_ADDR"
+# cast send $JUDGE2_ADDR \
+#     --value 10ether \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL
 
-echo "Funding Judge 3: $JUDGE3_ADDR"
-cast send $JUDGE3_ADDR \
-    --value 10ether \
-    --private-key $OWNER_KEY \
-    --rpc-url $RPC_URL
+# echo "Funding Judge 3: $JUDGE3_ADDR"
+# cast send $JUDGE3_ADDR \
+#     --value 10ether \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL
+
+# echo "Funding Judge 4: $JUDGE4_ADDR"
+# cast send $JUDGE4_ADDR \
+#     --value 10ether \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL
+
+# echo "Funding Judge 5: $JUDGE5_ADDR"
+# cast send $JUDGE5_ADDR \
+#     --value 10ether \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL
 
 echo "✅ All accounts funded"
 echo ""
@@ -88,32 +107,33 @@ echo ""
 echo "=========================================="
 echo "📋 STEP 1: Initialize Contracts"
 echo "=========================================="
+echo "✅ Skipping initialization (contracts pre-initialized)"
 
-echo "Initializing Protocol Contract..."
-echo "  Owner: $OWNER_ADDR"
-echo "  USDC Token: $USDC_ADDRESS"
+# echo "Initializing Protocol Contract..."
+# echo "  Owner: $OWNER_ADDR"
+# echo "  USDC Token: $USDC_ADDRESS"
 
-cast send $PROTOCOL_ADDRESS \
-    "init(address,address)" \
-    $OWNER_ADDR $USDC_ADDRESS \
-    --private-key $OWNER_KEY \
-    --rpc-url $RPC_URL \
-    --gas-limit 5000000
+# cast send $PROTOCOL_ADDRESS \
+#     "init(address,address)" \
+#     $OWNER_ADDR $USDC_ADDRESS \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL \
+#     --gas-limit 5000000
 
-echo "Initializing Marketplace Contract..."
-echo "  Owner: $OWNER_ADDR"
-echo "  Fee: 5%"
-echo "  USDC Token: $USDC_ADDRESS"
-echo "  Protocol: $PROTOCOL_ADDRESS"
+# echo "Initializing Marketplace Contract..."
+# echo "  Owner: $OWNER_ADDR"
+# echo "  Fee: 5%"
+# echo "  USDC Token: $USDC_ADDRESS"
+# echo "  Protocol: $PROTOCOL_ADDRESS"
 
-cast send $MARKETPLACE_ADDRESS \
-    "init(address,uint8,address,address)" \
-    $OWNER_ADDR 5 $USDC_ADDRESS $PROTOCOL_ADDRESS \
-    --private-key $OWNER_KEY \
-    --rpc-url $RPC_URL \
-    --gas-limit 5000000
+# cast send $MARKETPLACE_ADDRESS \
+#     "init(address,uint8,address,address)" \
+#     $OWNER_ADDR 5 $USDC_ADDRESS $PROTOCOL_ADDRESS \
+#     --private-key $OWNER_KEY \
+#     --rpc-url $RPC_URL \
+#     --gas-limit 5000000
 
-echo "✅ Contracts initialized"
+# echo "✅ Contracts initialized"
 echo ""
 
 echo "=========================================="
@@ -140,6 +160,20 @@ cast send $PROTOCOL_ADDRESS \
     --private-key $JUDGE3_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000 || echo "  (Judge 3 already registered)"
+
+echo "Registering Judge 4: $JUDGE4_ADDR"
+cast send $PROTOCOL_ADDRESS \
+    "registerAsJudge()" \
+    --private-key $JUDGE4_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 5000000 || echo "  (Judge 4 already registered)"
+
+echo "Registering Judge 5: $JUDGE5_ADDR"
+cast send $PROTOCOL_ADDRESS \
+    "registerAsJudge()" \
+    --private-key $JUDGE5_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 5000000 || echo "  (Judge 5 already registered)"
 
 echo "✅ Judges registered or already exist"
 echo ""
@@ -168,33 +202,48 @@ echo "✅ Users registered"
 echo ""
 
 echo "=========================================="
-echo "📋 STEP 4: Create Deal"
+echo "📋 STEP 4: Approve Marketplace to Spend USDC"
 echo "=========================================="
 
 DEAL_AMOUNT="1000000"  # 1 USDC (6 decimals)
+
+echo "Buyer approving marketplace to spend $DEAL_AMOUNT USDC..."
+cast send $USDC_ADDRESS \
+    "approve(address,uint256)" \
+    $MARKETPLACE_ADDRESS $DEAL_AMOUNT \
+    --private-key $BUYER_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 2000000
+
+echo "✅ Marketplace approved"
+echo ""
+
+echo "=========================================="
+echo "📋 STEP 11: Create Deal"
+echo "=========================================="
+
 DEAL_DURATION="7"      # 7 days
 
 echo "Creating deal: $DEAL_AMOUNT USDC for $DEAL_DURATION days"
 echo "Buyer: $BUYER_ADDR"
 echo "Seller: $SELLER_ADDR"
 
-DEAL_TX=$(cast send $MARKETPLACE_ADDRESS \
+cast send $MARKETPLACE_ADDRESS \
     "createDeal(address,uint256,uint64)" \
     $SELLER_ADDR $DEAL_AMOUNT $DEAL_DURATION \
     --private-key $BUYER_KEY \
     --rpc-url $RPC_URL \
-    --gas-limit 5000000 \
-    --json | jq -r '.transactionHash')
+    --gas-limit 5000000
 
-echo "Deal created! TX: $DEAL_TX"
+echo "✅ Deal created"
 
-# Get the deal ID from events (assuming it's deal ID 0 for first deal)
+# Get the latest deal ID (assuming sequential IDs starting from 0)
 DEAL_ID="0"
 echo "Deal ID: $DEAL_ID"
 echo ""
 
 echo "=========================================="
-echo "📋 STEP 5: Accept Deal"
+echo "📋 STEP 11: Accept Deal"
 echo "=========================================="
 
 echo "Seller accepting deal $DEAL_ID"
@@ -209,21 +258,37 @@ echo "✅ Deal accepted"
 echo ""
 
 echo "=========================================="
-echo "📋 STEP 6: Create Dispute"
+echo "📋 STEP 11: Approve Dispute Fee"
+echo "=========================================="
+
+DISPUTE_FEE="50000000"  # 50 USDC (6 decimals)
+
+echo "Buyer approving marketplace to spend $DISPUTE_FEE USDC for dispute fee..."
+cast send $USDC_ADDRESS \
+    "approve(address,uint256)" \
+    $MARKETPLACE_ADDRESS $DISPUTE_FEE \
+    --private-key $BUYER_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 2000000
+
+echo "✅ Dispute fee approved"
+echo ""
+
+echo "=========================================="
+echo "📋 STEP 11: Create Dispute"
 echo "=========================================="
 
 echo "Buyer creating dispute for deal $DEAL_ID"
 DISPUTE_PROOF="Seller did not deliver the service as promised"
 
-DISPUTE_TX=$(cast send $MARKETPLACE_ADDRESS \
+cast send $MARKETPLACE_ADDRESS \
     "createDispute(uint64,string)" \
     $DEAL_ID "$DISPUTE_PROOF" \
     --private-key $BUYER_KEY \
     --rpc-url $RPC_URL \
-    --gas-limit 5000000 \
-    --json | jq -r '.transactionHash')
+    --gas-limit 5000000
 
-echo "Dispute created! TX: $DISPUTE_TX"
+echo "✅ Dispute created"
 
 # Get dispute ID from Protocol (assuming it's dispute ID 0)
 DISPUTE_ID="0"
@@ -231,7 +296,54 @@ echo "Dispute ID: $DISPUTE_ID"
 echo ""
 
 echo "=========================================="
-echo "📋 STEP 7: Commit Votes (Judge Voting)"
+echo "📋 STEP 5: Register Judges for Dispute"
+echo "=========================================="
+
+echo "Judge 1 registering to vote on dispute $DISPUTE_ID..."
+cast send $PROTOCOL_ADDRESS \
+    "register_to_vote(uint64)" \
+    $DISPUTE_ID \
+    --private-key $JUDGE1_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 2000000
+
+echo "Judge 2 registering to vote on dispute $DISPUTE_ID..."
+cast send $PROTOCOL_ADDRESS \
+    "register_to_vote(uint64)" \
+    $DISPUTE_ID \
+    --private-key $JUDGE2_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 2000000
+
+echo "Judge 3 registering to vote on dispute $DISPUTE_ID..."
+cast send $PROTOCOL_ADDRESS \
+    "register_to_vote(uint64)" \
+    $DISPUTE_ID \
+    --private-key $JUDGE3_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 2000000
+
+echo "Judge 4 registering to vote on dispute $DISPUTE_ID..."
+cast send $PROTOCOL_ADDRESS \
+    "register_to_vote(uint64)" \
+    $DISPUTE_ID \
+    --private-key $JUDGE4_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 2000000
+
+echo "Judge 5 registering to vote on dispute $DISPUTE_ID..."
+cast send $PROTOCOL_ADDRESS \
+    "register_to_vote(uint64)" \
+    $DISPUTE_ID \
+    --private-key $JUDGE5_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 2000000
+
+echo "✅ All 5 judges registered for dispute"
+echo ""
+
+echo "=========================================="
+echo "📋 STEP 11: Commit Votes (Judge Voting)"
 echo "=========================================="
 
 # Generate vote commits (hash of vote + secret)
@@ -249,6 +361,14 @@ JUDGE2_COMMIT=$(cast keccak "$(echo -n "${JUDGE2_VOTE}${JUDGE2_SECRET}")")
 JUDGE3_VOTE="false"
 JUDGE3_SECRET="secret3"
 JUDGE3_COMMIT=$(cast keccak "$(echo -n "${JUDGE3_VOTE}${JUDGE3_SECRET}")")
+
+JUDGE4_VOTE="true"
+JUDGE4_SECRET="secret4"
+JUDGE4_COMMIT=$(cast keccak "$(echo -n "${JUDGE4_VOTE}${JUDGE4_SECRET}")")
+
+JUDGE5_VOTE="true"
+JUDGE5_SECRET="secret5"
+JUDGE5_COMMIT=$(cast keccak "$(echo -n "${JUDGE5_VOTE}${JUDGE5_SECRET}")")
 
 echo "Judge 1 committing vote..."
 cast send $PROTOCOL_ADDRESS \
@@ -274,11 +394,27 @@ cast send $PROTOCOL_ADDRESS \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
+echo "Judge 4 committing vote..."
+cast send $PROTOCOL_ADDRESS \
+    "commitVote(uint64,bytes32)" \
+    $DISPUTE_ID $JUDGE4_COMMIT \
+    --private-key $JUDGE4_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 5000000
+
+echo "Judge 5 committing vote..."
+cast send $PROTOCOL_ADDRESS \
+    "commitVote(uint64,bytes32)" \
+    $DISPUTE_ID $JUDGE5_COMMIT \
+    --private-key $JUDGE5_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 5000000
+
 echo "✅ All votes committed"
 echo ""
 
 echo "=========================================="
-echo "📋 STEP 8: Reveal Votes"
+echo "📋 STEP 11: Reveal Votes"
 echo "=========================================="
 
 echo "Judge 1 revealing vote..."
@@ -305,11 +441,27 @@ cast send $PROTOCOL_ADDRESS \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
+echo "Judge 4 revealing vote..."
+cast send $PROTOCOL_ADDRESS \
+    "revealVotes(uint64,bool,string)" \
+    $DISPUTE_ID $JUDGE4_VOTE "$JUDGE4_SECRET" \
+    --private-key $JUDGE4_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 5000000
+
+echo "Judge 5 revealing vote..."
+cast send $PROTOCOL_ADDRESS \
+    "revealVotes(uint64,bool,string)" \
+    $DISPUTE_ID $JUDGE5_VOTE "$JUDGE5_SECRET" \
+    --private-key $JUDGE5_KEY \
+    --rpc-url $RPC_URL \
+    --gas-limit 5000000
+
 echo "✅ All votes revealed"
 echo ""
 
 echo "=========================================="
-echo "📋 STEP 9: Check Results"
+echo "📋 STEP 11: Check Results"
 echo "=========================================="
 
 echo "Getting dispute vote results..."
@@ -337,7 +489,7 @@ fi
 echo ""
 
 echo "=========================================="
-echo "📋 STEP 10: Execute Dispute Result"
+echo "📋 STEP 11: Execute Dispute Result"
 echo "=========================================="
 
 echo "Executing dispute result in marketplace..."
