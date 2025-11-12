@@ -1,0 +1,31 @@
+[0;0m[90mBuilding project with Cargo.toml version: 0.1.9[0;0m
+    Finished `release` profile [optimized] target(s) in 0.12s
+[0;0m[90mstripped custom section from user wasm to remove any sensitive data[0;0m
+[0;0m[90mcontract size: [33;1m23.8 KiB[0;0m[90m (24417 bytes)[0;0m
+[0;0m[90mwasm size: [38;5;48;1m82.8 KiB[0;0m[90m (84753 bytes)[0;0m
+[0;0m[90mFile used for deployment hash: ./Cargo.lock[0;0m
+[0;0m[90mFile used for deployment hash: ./Cargo.toml[0;0m
+[0;0m[90mFile used for deployment hash: ./examples/counter.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./rust-toolchain.toml[0;0m
+[0;0m[90mFile used for deployment hash: ./src/lib.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/main.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/marketplace/lib.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/marketplace/marketplace.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/marketplace/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/protocol/lib.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/protocol/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/protocol/protocol.rs[0;0m
+[0;0m[90mproject metadata hash computed on deployment: "001a8507899ed75b14885bc78467bde1c312c31f1958c456e7aa565f35aa44af"[0;0m
+[0;0m[90mstripped custom section from user wasm to remove any sensitive data[0;0m
+[0;0m[90mcontract size: [33;1m23.8 KiB[0;0m[90m (24417 bytes)[0;0m
+[0;0m[90mwasm data fee: [38;5;48;1m0.000161 ETH[0;0m [0;0m[90m(originally [38;5;48;1m0.000134 ETH[0;0m[0;0m[90m with [38;5;183;1m20%[0;0m[90m bump)[0;0m
+[0;0m[90mchecking whether the contract has a constructor...[0;0m
+error[E0433]: failed to resolve: could not find `protocol` in `lancer`
+ --> src/main.rs:5:13
+  |
+5 |     lancer::protocol::print_abi("Apache-2.0", "pragma solidity ^0.8.23;");
+  |             ^^^^^^^^ could not find `protocol` in `lancer`
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `lancer` (bin "lancer-abi") due to 1 previous error
+[0;0m[90mfailed to run contract [0;0m

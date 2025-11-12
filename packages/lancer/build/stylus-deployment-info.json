@@ -1,16 +1,13 @@
 {
-  "network": "nitro-dev",
   "rpc_url": "http://127.0.0.1:8547",
-  "deployment_time": "2025-11-12T19:27:02Z",
-  "cache_manager_address": "0x11B57FE348584f042E436c6Bf7c3c3deF171de49",
   "protocol_contract": {
-    "address": "0xa6e41ffd769491a42a6e5ce453259b93983a22ef",
-    "transaction_hash": "0x40a76fc25ede11a8156f78a9962d5cc0f0e85fb59b95049f7195e7443d89490b",
-    "abi_file": "build/protocol.abi"
+    "address": "0xda52b25ddb0e3b9cc393b0690ac62245ac772527",
+    "size_bytes": 21229
   },
   "marketplace_contract": {
-    "address": "0x7e32b54800705876d3b5cfbc7d9c226a211f7c1a",
-    "transaction_hash": "0x32198bf716a804bc1770a86d50434605f06d2bc7a589a2207db59ac329b127f5",
-    "abi_file": "build/marketplace.abi"
-  }
+    "address": "0x1294b86822ff4976bfe136cb06cf43ec7fcf2574",
+    "size_bytes": 24417
+  },
+  "owner_address": "0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E",
+  "deployed_at": "2025-11-12T15:30:00Z"
 }

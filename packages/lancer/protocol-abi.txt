@@ -25,7 +25,9 @@ interface IProtocolContract {
 
     function commitVote(uint64 dispute_id, uint8[32] calldata commit_hash) external;
 
-    function revealVotes(uint64 dispute_id, bool[] memory votes, uint8[32][] memory secrets) external;
+    function revealVotes(uint64 dispute_id, bool vote, string calldata secret) external;
+
+    function getDisputeWinner(uint64 dispute_id) external view returns (bool);
 
     function executeDisputeResult(uint64 dispute_id) external view returns (bool);
 

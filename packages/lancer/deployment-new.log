@@ -1,0 +1,207 @@
+nohup: ignoring input
+Starting Nitro dev node...
+Waiting for the Nitro node to initialize...
+WARN [11-12|19:45:15.637] Chain info field parent-chain-is-arbitrum is missing, in the future this will be required chainId=412,346 parentChainId=0
+INFO [11-12|19:45:15.644] created jwt file                         filename=/home/user/.arbitrum/jwtsecret
+INFO [11-12|19:45:15.644] Running Arbitrum nitro node              revision=v3.2.1-d81324d vcs.time=2024-09-24T10:12:36-05:00
+INFO [11-12|19:45:15.644] Defaulting to pebble as the backing database
+INFO [11-12|19:45:15.645] Allocated cache and file handles         database=/tmp/dev-test/nitro/l2chaindata cache=16.00MiB handles=16
+INFO [11-12|19:45:15.645] Defaulting to pebble as the backing database
+INFO [11-12|19:45:15.645] Allocated cache and file handles         database=/tmp/dev-test/nitro/l2chaindata cache=2.00GiB handles=512
+INFO [11-12|19:45:15.654] Opened ancient database                  database=/tmp/dev-test/nitro/l2chaindata/ancient/chain readonly=false
+INFO [11-12|19:45:15.654] Defaulting to pebble as the backing database
+INFO [11-12|19:45:15.654] Allocated cache and file handles         database=/tmp/dev-test/nitro/wasm cache=2.00GiB handles=512
+INFO [11-12|19:45:15.659] State scheme set by user                 scheme=hash
+INFO [11-12|19:45:15.660] Setting codehash position in rebuilding of wasm store to done
+INFO [11-12|19:45:15.660] Initializing                             ancients=0 genesisBlockNr=0
+WARN [11-12|19:45:15.660] Created fake init message as L1Reader is disabled and serialized chain config from init message is not available json="{\"chainId\":412346,\"homesteadBlock\":0,\"daoForkSupport\":true,\"eip150Block\":0,\"eip155Block\":0,\"eip158Block\":0,\"byzantiumBlock\":0,\"constantinopleBlock\":0,\"petersburgBlock\":0,\"istanbulBlock\":0,\"muirGlacierBlock\":0,\"berlinBlock\":0,\"londonBlock\":0,\"clique\":{\"period\":0,\"epoch\":0},\"arbitrum\":{\"EnableArbOS\":true,\"AllowDebugPrecompiles\":true,\"DataAvailabilityCommittee\":false,\"InitialArbOSVersion\":32,\"InitialChainOwner\":\"0x0000000000000000000000000000000000000000\",\"GenesisBlockNum\":0}}"
+ERROR[11-12|19:45:15.660] Zero state root hash!
+ERROR[11-12|19:45:15.660] Zero state root hash!
+INFO [11-12|19:45:15.661] addresss table import complete
+INFO [11-12|19:45:15.661] retryables import complete
+INFO [11-12|19:45:15.663] Persisted trie from memory database      nodes=82 size=9.33KiB time="983.068µs" gcnodes=0 gcsize=0.00B gctime=0s livenodes=0 livesize=0.00B
+INFO [11-12|19:45:15.663] Persisted trie from memory database      nodes=4  size=806.00B time="535.595µs" gcnodes=0 gcsize=0.00B gctime=0s livenodes=0 livesize=0.00B
+INFO [11-12|19:45:15.668] wrote genesis block                      number=0 hash=ada78e..915675
+INFO [11-12|19:45:15.669] 
+INFO [11-12|19:45:15.669] ---------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO [11-12|19:45:15.669] Chain ID:  412346 (unknown)
+INFO [11-12|19:45:15.669] Consensus: Clique (proof-of-authority)
+INFO [11-12|19:45:15.669] 
+INFO [11-12|19:45:15.669] Pre-Merge hard forks (block based):
+INFO [11-12|19:45:15.669]  - Homestead:                   #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/homestead.md)
+INFO [11-12|19:45:15.669]  - Tangerine Whistle (EIP 150): #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/tangerine-whistle.md)
+INFO [11-12|19:45:15.669]  - Spurious Dragon/1 (EIP 155): #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)
+INFO [11-12|19:45:15.669]  - Spurious Dragon/2 (EIP 158): #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)
+INFO [11-12|19:45:15.669]  - Byzantium:                   #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/byzantium.md)
+INFO [11-12|19:45:15.669]  - Constantinople:              #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/constantinople.md)
+INFO [11-12|19:45:15.669]  - Petersburg:                  #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/petersburg.md)
+INFO [11-12|19:45:15.669]  - Istanbul:                    #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md)
+INFO [11-12|19:45:15.669]  - Muir Glacier:                #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/muir-glacier.md)
+INFO [11-12|19:45:15.669]  - Berlin:                      #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md)
+INFO [11-12|19:45:15.669]  - London:                      #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md)
+INFO [11-12|19:45:15.669] 
+INFO [11-12|19:45:15.669] The Merge is not yet available for this network!
+INFO [11-12|19:45:15.669]  - Hard-fork specification: https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md
+INFO [11-12|19:45:15.669] 
+INFO [11-12|19:45:15.669] Post-Merge hard forks (timestamp based):
+INFO [11-12|19:45:15.669] 
+INFO [11-12|19:45:15.669] ---------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO [11-12|19:45:15.669] 
+INFO [11-12|19:45:15.669] Loaded most recent local block           number=0 hash=ada78e..915675 td=1 age=56y8mo4d
+WARN [11-12|19:45:15.669] Failed to load snapshot                  err="missing or corrupted snapshot"
+INFO [11-12|19:45:15.670] Rebuilding state snapshot
+INFO [11-12|19:45:15.671] Initialized transaction indexer          range="last 126230400 blocks"
+INFO [11-12|19:45:15.671] Resuming state snapshot generation       root=ea1bc4..eabb0d accounts=0 slots=0 storage=0.00B dangling=0 elapsed="680.083µs"
+INFO [11-12|19:45:15.671] Setting rebuilding of wasm store to done
+INFO [11-12|19:45:15.672] Generated state snapshot                 accounts=18 slots=43 storage=4.56KiB dangling=0 elapsed=1.475ms
+INFO [11-12|19:45:15.672] Defaulting to pebble as the backing database
+INFO [11-12|19:45:15.672] Allocated cache and file handles         database=/tmp/dev-test/nitro/arbitrumdata cache=16.00MiB handles=16
+WARN [11-12|19:45:15.677] sequencer enabled without l1 client
+INFO [11-12|19:45:15.679] Starting peer-to-peer node               instance=nitro/v3.2.1-d81324d/linux-amd64/go1.21.10
+WARN [11-12|19:45:15.679] P2P server will be useless, neither dialing nor listening
+INFO [11-12|19:45:15.682] HTTP server started                      endpoint=[::]:8547 auth=false prefix= cors=* vhosts=localhost
+INFO [11-12|19:45:15.683] New local node record                    seq=1,762,976,715,683 id=322f50dd94763f6c ip=127.0.0.1 udp=0 tcp=0
+INFO [11-12|19:45:15.684] Started P2P networking                   self=enode://4f86cce174ce0c2581a0450eb84949206f9e9a42e0ec753fe6090466530ebce71b538a8a30d3a697933110866afb91c5becaa9950f21d42d32bd0904716ec52b@127.0.0.1:0
+Nitro node is running!
+Setting chain owner to pre-funded dev account...
+INFO [11-12|19:45:16.666] Submitted transaction                    hash=0xbe7ec1ff63e0a3318c2d83516e853c7f9aabddec70b41e431d6f6e947dfc8a57 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=0 recipient=0x00000000000000000000000000000000000000ff value=0
+INFO [11-12|19:45:16.667] Indexed transactions                     blocks=2 txs=2 tail=0 elapsed="591.28µs"
+
+blockHash            0x3d2f344a758d779f3a5ec00f1a61b15b83b1163d134629325c7ae8b215426bb2
+blockNumber          1
+contractAddress      
+cumulativeGasUsed    1020264
+effectiveGasPrice    100000000
+from                 0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E
+gasUsed              1020264
+logs                 []
+logsBloom            0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+root                 
+status               1 (success)
+transactionHash      0xbe7ec1ff63e0a3318c2d83516e853c7f9aabddec70b41e431d6f6e947dfc8a57
+transactionIndex     1
+type                 2
+blobGasPrice         
+blobGasUsed          
+to                   0x00000000000000000000000000000000000000ff
+gasUsedForL1         936000
+l1BlockNumber        0
+
+Deploying Cache Manager contract...
+INFO [11-12|19:45:16.680] Submitted contract creation              hash=0xc1131b070db52dfe664e10f3b02261c7476424050dc0095e04f8447ae93c81d6 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=1 contract=0x11B57FE348584f042E436c6Bf7c3c3deF171de49 value=0
+Cache Manager contract deployed at address: 0x11B57FE348584f042E436c6Bf7c3c3deF171de49
+Registering Cache Manager contract as a WASM cache manager...
+INFO [11-12|19:45:16.927] Submitted transaction                    hash=0x5084e9fd6fe32ca14b701cab39293be2d9dbd108084cd68390cbc0609e39c089 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=2 recipient=0x0000000000000000000000000000000000000070 value=0
+Cache Manager deployed and registered successfully.
+==========================================
+Deploying Protocol Contract...
+==========================================
+WARN [11-12|19:45:18.833] Served eth_call                          conn=172.17.0.1:40754 reqid=0 duration="411.433µs" err="execution reverted: error ProgramNotActivated()" errdata=0x6f809c4e
+INFO [11-12|19:45:20.782] Submitted contract creation              hash=0x40a76fc25ede11a8156f78a9962d5cc0f0e85fb59b95049f7195e7443d89490b from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=3 contract=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+INFO [11-12|19:45:20.999] Submitted transaction                    hash=0x16358b6f9d541d2c1ee571db09fc3c83c4f1b4bb460d96587b105befe509799d from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=4 recipient=0x0000000000000000000000000000000000000071 value=143,764,516,089,402
+✅ Protocol Contract deployed successfully!
+   Address: 0xa6e41ffd769491a42a6e5ce453259b93983a22ef
+   TX Hash: 0x40a76fc25ede11a8156f78a9962d5cc0f0e85fb59b95049f7195e7443d89490b
+Generating Protocol ABI...
+✅ Protocol ABI saved to build/protocol.abi
+
+==========================================
+Deploying Marketplace Contract...
+==========================================
+WARN [11-12|19:45:23.134] Served eth_call                          conn=172.17.0.1:40796 reqid=0 duration="350.079µs" err="execution reverted: error ProgramNotActivated()" errdata=0x6f809c4e
+INFO [11-12|19:45:25.144] Submitted contract creation              hash=0x32198bf716a804bc1770a86d50434605f06d2bc7a589a2207db59ac329b127f5 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=5 contract=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+INFO [11-12|19:45:25.369] Submitted transaction                    hash=0x8409ebf7cade000cd8f30e24f398101be7130f5a583b6e7c3735880c2becf2ba from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=6 recipient=0x0000000000000000000000000000000000000071 value=161,748,745,808,448
+✅ Marketplace Contract deployed successfully!
+   Address: 0x7e32b54800705876d3b5cfbc7d9c226a211f7c1a
+   TX Hash: 0x32198bf716a804bc1770a86d50434605f06d2bc7a589a2207db59ac329b127f5
+Generating Marketplace ABI...
+✅ Marketplace ABI saved to build/marketplace.abi
+
+==========================================
+✅ DEPLOYMENT COMPLETED SUCCESSFULLY!
+==========================================
+Protocol Contract:    0xa6e41ffd769491a42a6e5ce453259b93983a22ef
+Marketplace Contract: 0x7e32b54800705876d3b5cfbc7d9c226a211f7c1a
+Deployment info saved to: build/stylus-deployment-info.json
+==========================================
+INFO [11-12|19:46:41.322] Submitted transaction                    hash=0x7f884d727cba51f388a4cbc860df16017a12513bf3bbccfbf3178578ead91206 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=7 recipient=0x2B5AD5c4795c026514f8317c7a215E218DcCD6cF value=10,000,000,000,000,000,000
+INFO [11-12|19:46:41.336] Submitted transaction                    hash=0x1547d407dc5b2cd8e38eba16cfc26efe0f60765497a566d8193844ee4fe3102a from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=8 recipient=0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69 value=10,000,000,000,000,000,000
+INFO [11-12|19:46:41.582] Submitted transaction                    hash=0x1618760c8f8f643b634ff19f5214523890ad35b2f34d7dfcce309685f0f5fa6c from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=9 recipient=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc value=10,000,000,000,000,000,000
+INFO [11-12|19:46:41.832] Submitted transaction                    hash=0x03184dde7757e554d1f9bbd3a7cc572684db115c9dd8cc0575c9606409df1826 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=10 recipient=0x976EA74026E726554dB657fA54763abd0C3a0aa9 value=10,000,000,000,000,000,000
+INFO [11-12|19:46:42.082] Submitted transaction                    hash=0x3f07a754ae1f56ef0faf0f84dc744c0da9ed133ed436e2080d685b570208bc8d from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=11 recipient=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 value=10,000,000,000,000,000,000
+WARN [11-12|19:46:42.332] program failure                          err="execution reverted"            msg="call failed\n\nCaused by:\n    OutOfGas\n\nLocation:\n    /workspace/arbitrator/arbutil/src/evm/req.rs:147:13" program=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF depth=1
+INFO [11-12|19:46:42.334] Submitted transaction                    hash=0xa9aa5a8efcdfc167756c517c92bcb55a97bb5f31174116609c99f1f003b1dd05 from=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc nonce=0  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:46:42.337] Served eth_call                          conn=172.17.0.1:53576 reqid=6 duration="165.102µs" err="err: intrinsic gas too low (supplied gas 1000000)"
+WARN [11-12|19:46:42.575] program failure                          err="execution reverted"            msg="call failed\n\nCaused by:\n    OutOfGas\n\nLocation:\n    /workspace/arbitrator/arbutil/src/evm/req.rs:147:13" program=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF depth=1
+INFO [11-12|19:46:42.584] Submitted transaction                    hash=0x1c87dfd67349ae92fdcc0a883cb69665736a22319883487f9097f05ee2acefbb from=0x976EA74026E726554dB657fA54763abd0C3a0aa9 nonce=0  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:46:42.588] Served eth_call                          conn=172.17.0.1:53592 reqid=6 duration="165.745µs" err="err: intrinsic gas too low (supplied gas 1000000)"
+WARN [11-12|19:46:42.825] program failure                          err="execution reverted"            msg="call failed\n\nCaused by:\n    OutOfGas\n\nLocation:\n    /workspace/arbitrator/arbutil/src/evm/req.rs:147:13" program=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF depth=1
+INFO [11-12|19:46:42.829] Submitted transaction                    hash=0x717ab9bc153c605547a34cf7c2c82c9bb9187c16dc238220bf4ac3f3a002fb04 from=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 nonce=0  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:46:42.831] Served eth_call                          conn=172.17.0.1:53606 reqid=6 duration="156.165µs" err="err: intrinsic gas too low (supplied gas 1000000)"
+WARN [11-12|19:46:42.839] Served eth_sendRawTransaction            conn=172.17.0.1:53620 reqid=3 duration="200.188µs" err="insufficient funds for gas * price + value: address 0x90F79bf6EB2c4f870365E785982E1f101E93b906 have 0 want 200000001000000"
+INFO [11-12|19:48:45.638] Submitted transaction                    hash=0x121e328b3a4c99ff27135cd580f112ee2919a90b18239c6e1ac313075409e259 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=12 recipient=0x2B5AD5c4795c026514f8317c7a215E218DcCD6cF value=10,000,000,000,000,000,000
+INFO [11-12|19:48:45.655] Submitted transaction                    hash=0xaa8206c841a7524590c10007564cbbcd891704fe3cfae1aa614822c8e8e23882 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=13 recipient=0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69 value=10,000,000,000,000,000,000
+INFO [11-12|19:48:45.898] Submitted transaction                    hash=0x80f20911ec4e2a412a48b743774e35483318ed61ca19da2f20371d86717ae11d from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=14 recipient=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc value=10,000,000,000,000,000,000
+INFO [11-12|19:48:46.149] Submitted transaction                    hash=0x58be9037ee5dc9db0d4307d35f717087fc1caa563d6be5b8511d4e09cf19b17e from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=15 recipient=0x976EA74026E726554dB657fA54763abd0C3a0aa9 value=10,000,000,000,000,000,000
+INFO [11-12|19:48:46.398] Submitted transaction                    hash=0x677c070a4465f8adca4899060e9cf7199aa9732fb2f709d1e5c978c647aa0ed1 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=16 recipient=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 value=10,000,000,000,000,000,000
+WARN [11-12|19:48:46.420] Served eth_sendRawTransaction            conn=172.17.0.1:54298 reqid=3 duration="349.673µs" err="intrinsic gas too low"
+INFO [11-12|19:49:58.043] Submitted transaction                    hash=0xa09828d5fd444ade4e9644f823051a84b0f59fccc6d41262693ee5865e905d7b from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=17 recipient=0x2B5AD5c4795c026514f8317c7a215E218DcCD6cF value=10,000,000,000,000,000,000
+INFO [11-12|19:49:58.075] Submitted transaction                    hash=0x30215fbbe5fb89fec0854834c28fd365d55dc191338f5ee453546c71cb6d6754 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=18 recipient=0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69 value=10,000,000,000,000,000,000
+INFO [11-12|19:49:58.304] Submitted transaction                    hash=0xf402104822851195580b3bd3d6d984f2b7930be8f2de49ccf4e3640c806b8914 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=19 recipient=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc value=10,000,000,000,000,000,000
+INFO [11-12|19:49:58.555] Submitted transaction                    hash=0x1b97476ed14e6a94be68e555e4540a2d324c2943e64befc42c1851bad76d73e1 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=20 recipient=0x976EA74026E726554dB657fA54763abd0C3a0aa9 value=10,000,000,000,000,000,000
+INFO [11-12|19:49:58.806] Submitted transaction                    hash=0x633289c8d50f50c05d76ac594d0ba9c28e568248eeecad36aabb281bf55217e9 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=21 recipient=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 value=10,000,000,000,000,000,000
+INFO [11-12|19:49:59.057] Submitted transaction                    hash=0x3853fafed801a4caa0aeaa223397296cc9d941bfd3e648335dff212e6831500f from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=22 recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+INFO [11-12|19:49:59.314] Submitted transaction                    hash=0x9e695351498375c3a1526d0270a68e29515b1155f16ff93fac9d80df95e0b2d9 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=23 recipient=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+INFO [11-12|19:49:59.559] Submitted transaction                    hash=0x339cbd83058d9bbf82a31d6d4564be4aa46564f497f59572147375adb069a8a6 from=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc nonce=1  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+INFO [11-12|19:49:59.809] Submitted transaction                    hash=0x350dd16c8a59f23ddea1dfe721b7380c101ddba3eaa705e0bed3c7c4599dc239 from=0x976EA74026E726554dB657fA54763abd0C3a0aa9 nonce=1  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+INFO [11-12|19:50:00.059] Submitted transaction                    hash=0xb57b409a7125d56a307633ff74bd77599abf700363fa3ad80d75fbdf053eab0c from=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 nonce=1  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:50:00.087] Served eth_sendRawTransaction            conn=172.17.0.1:48488 reqid=3 duration="767.949µs" err="insufficient funds for gas * price + value: address 0x90F79bf6EB2c4f870365E785982E1f101E93b906 have 0 want 1000000005000000"
+INFO [11-12|19:53:10.408] Submitted transaction                    hash=0x14e234d8c87e5b932e1f039ed5b750bfd383afc69585c5c43972b3f5b4597bf4 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=24 recipient=0x90F79bf6EB2c4f870365E785982E1f101E93b906 value=10,000,000,000,000,000,000
+INFO [11-12|19:53:10.438] Submitted transaction                    hash=0x428833ba574f917c6d7e06cd6da6a7f191de8b1d78aaf0a605f4c8dc32574902 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=25 recipient=0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 value=10,000,000,000,000,000,000
+INFO [11-12|19:53:10.669] Submitted transaction                    hash=0xa9dfa00a5a542752d9a628a0d1f48cbfe6be705244637d4ab48befbcaee09d52 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=26 recipient=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc value=10,000,000,000,000,000,000
+INFO [11-12|19:53:10.920] Submitted transaction                    hash=0x5aa08b4b862b5894d41f75972a94b88d387b07a08d29b8673b0d3512f08a7138 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=27 recipient=0x976EA74026E726554dB657fA54763abd0C3a0aa9 value=10,000,000,000,000,000,000
+INFO [11-12|19:53:11.170] Submitted transaction                    hash=0x13ccdc2cae905726f956bec83c1a18804c89ba8db0e933cae080553fe3db8d30 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=28 recipient=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 value=10,000,000,000,000,000,000
+INFO [11-12|19:53:11.421] Submitted transaction                    hash=0x2d6f214d7a3b935420d78c712c247122514c989c348c54302b82734d2c355e6d from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=29 recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+INFO [11-12|19:53:11.672] Submitted transaction                    hash=0xf8fb87db67fa0ef31b36022b365facf40c1501c9a4414b658b9710d164a93adf from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=30 recipient=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+INFO [11-12|19:53:11.917] Submitted transaction                    hash=0x76b6cb165edf8077bbafb7db606ac857e98547ae6a2a095232dad11a3f64b626 from=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc nonce=2  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:11.923] Served eth_call                          conn=172.17.0.1:49360 reqid=6 duration=1.251966ms err="execution reverted" errdata=0x3a81d6fc
+INFO [11-12|19:53:12.173] Submitted transaction                    hash=0xd522ae0132177af761f7e25e6c53bfba7c967aa76055bdf456c751307e350c4c from=0x976EA74026E726554dB657fA54763abd0C3a0aa9 nonce=2  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:12.179] Served eth_call                          conn=172.17.0.1:49374 reqid=6 duration=1.343874ms err="execution reverted" errdata=0x3a81d6fc
+INFO [11-12|19:53:12.417] Submitted transaction                    hash=0x2ea4b897f5d8670c09ba18434e3a8bf31cb77ba0c63ec414dba75754d7ca3517 from=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 nonce=2  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:12.422] Served eth_call                          conn=172.17.0.1:49378 reqid=6 duration="835.726µs" err="execution reverted" errdata=0x3a81d6fc
+INFO [11-12|19:53:12.674] Submitted transaction                    hash=0x290740815feff326c9010c77f75bb8e78524d74107b381c92cb7867e62771442 from=0x90F79bf6EB2c4f870365E785982E1f101E93b906 nonce=0  recipient=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+INFO [11-12|19:53:12.925] Submitted transaction                    hash=0xdde5613e138ca1f624d841057541e7525eaa626eb45eb4d148048ad4d0e40f1c from=0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 nonce=0  recipient=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+INFO [11-12|19:53:13.175] Submitted transaction                    hash=0x7ebf589b8b5445e56cbb848741a999bc114fd97d1d2c4c64bc943a25c6302fff from=0x90F79bf6EB2c4f870365E785982E1f101E93b906 nonce=1  recipient=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+WARN [11-12|19:53:13.180] Served eth_call                          conn=172.17.0.1:49416 reqid=6 duration=1.260071ms err="execution reverted" errdata=0xbaf3f0f7
+INFO [11-12|19:53:13.425] Submitted transaction                    hash=0x9fa5f59c561d29fe20d1d01717eb03e14d2f24aa5b20ac6b3c3a74d004ef4a51 from=0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 nonce=1  recipient=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+WARN [11-12|19:53:13.431] Served eth_call                          conn=172.17.0.1:49426 reqid=6 duration=1.224661ms err="execution reverted" errdata=0xc5723b51
+INFO [11-12|19:53:13.676] Submitted transaction                    hash=0xec030f21ec8dfe11d8082b3285fc16df14edc70c63dbbb0b357de4e0448a1e2d from=0x90F79bf6EB2c4f870365E785982E1f101E93b906 nonce=2  recipient=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+WARN [11-12|19:53:13.682] Served eth_call                          conn=172.17.0.1:49442 reqid=6 duration=1.479574ms err="execution reverted"
+INFO [11-12|19:53:13.927] Submitted transaction                    hash=0xd5614bf5d36a4d647cca13b7e73f79c3d1a96410e98be0a4b633f90621726ab9 from=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc nonce=3  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:13.932] Served eth_call                          conn=172.17.0.1:49454 reqid=6 duration=1.211895ms err="execution reverted"
+INFO [11-12|19:53:14.177] Submitted transaction                    hash=0xec3b105d328880b80685f1eb71ef7f1cacfb1152451505a10d227960fba9f358 from=0x976EA74026E726554dB657fA54763abd0C3a0aa9 nonce=3  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:14.183] Served eth_call                          conn=172.17.0.1:49458 reqid=6 duration=1.236745ms err="execution reverted"
+INFO [11-12|19:53:14.428] Submitted transaction                    hash=0x4f34b4bd62ecb440025e0eaa83fec8b50a0010948b9e5b6100d26e37c80a0860 from=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 nonce=3  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:14.433] Served eth_call                          conn=172.17.0.1:49478 reqid=6 duration=1.167708ms err="execution reverted"
+INFO [11-12|19:53:14.679] Submitted transaction                    hash=0x93a2d62b2f6b023573f1292b9473fc6fafb9045b1f0ab0252c7802d3ff17ed87 from=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc nonce=4  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:14.684] Served eth_call                          conn=172.17.0.1:49484 reqid=6 duration=1.227377ms err="execution reverted"
+INFO [11-12|19:53:14.929] Submitted transaction                    hash=0x37dd0c54eecf36b9f9b202c45f35f9a7b73581aafa2f58c1175ea213ec93690c from=0x976EA74026E726554dB657fA54763abd0C3a0aa9 nonce=4  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:14.935] Served eth_call                          conn=172.17.0.1:49490 reqid=6 duration=1.247885ms err="execution reverted"
+INFO [11-12|19:53:15.180] Submitted transaction                    hash=0xb33aaf7798bf75a0512502ddfe41d38f722f31b884b5100540085ce051d4e9e5 from=0x14dC79964da2C08b23698B3D3cc7Ca32193d9955 nonce=4  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:53:15.185] Served eth_call                          conn=172.17.0.1:49504 reqid=6 duration=1.268722ms err="execution reverted"
+WARN [11-12|19:53:15.207] Served eth_call                          conn=172.17.0.1:49520 reqid=2 duration=1.209063ms err="execution reverted"
+INFO [11-12|19:54:12.565] Submitted transaction                    hash=0x3c90cd7c1d67a64f773c937705cfd518ac5b7a976c7f6668e02f02ddd1f56675 from=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc nonce=5  recipient=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+WARN [11-12|19:54:12.569] Served eth_call                          conn=172.17.0.1:53526 reqid=6 duration="688.349µs" err="execution reverted" errdata=0x3a81d6fc
+WARN [11-12|19:54:20.481] Served eth_call                          conn=172.17.0.1:58320 reqid=2 duration=2.060189ms err="execution reverted" errdata=0x3a81d6fc
+INFO [11-12|19:55:11.434] shutting down because of sigint
+INFO [11-12|19:55:11.435] HTTP server stopped                      endpoint=[::]:8547
+INFO [11-12|19:55:11.440] Writing cached state to disk             block=52 hash=a35427..012fb7 root=2b41e4..e086da
+INFO [11-12|19:55:11.443] Persisted trie from memory database      nodes=75 size=9.63KiB time=3.041028ms  gcnodes=0 gcsize=0.00B gctime="63.13µs" livenodes=728 livesize=131.21KiB
+INFO [11-12|19:55:11.444] Writing cached state to disk             block=51 hash=fd5378..388a17 root=c76754..8a4545
+INFO [11-12|19:55:11.445] Persisted trie from memory database      nodes=14 size=2.60KiB time=1.787192ms  gcnodes=0 gcsize=0.00B gctime=0s        livenodes=714 livesize=128.62KiB
+INFO [11-12|19:55:11.446] Writing cached state to disk             block=1  hash=3d2f34..426bb2 root=5126cf..241a10
+INFO [11-12|19:55:11.447] Persisted trie from memory database      nodes=15 size=2.52KiB time="876.003µs" gcnodes=0 gcsize=0.00B gctime=0s        livenodes=699 livesize=126.10KiB
+INFO [11-12|19:55:11.447] Writing snapshot state to disk           root=ea1bc4..eabb0d
+INFO [11-12|19:55:11.447] Persisted trie from memory database      nodes=0  size=0.00B   time="5.959µs"   gcnodes=0 gcsize=0.00B gctime=0s        livenodes=699 livesize=126.10KiB
+INFO [11-12|19:55:11.450] Blockchain stopped
+Nitro node container stopped unexpectedly

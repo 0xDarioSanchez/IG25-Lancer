@@ -17,5 +17,5 @@
 // To switch contracts:
 // 1. Comment/uncomment the module you want below
 // 2. Update main.rs to match
-pub mod protocol;
-// pub mod marketplace;
+// pub mod protocol;
+pub mod marketplace;
