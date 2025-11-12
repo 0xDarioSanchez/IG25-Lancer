@@ -63,73 +63,127 @@ fi
 
 echo "Cache Manager deployed and registered successfully."
 
-echo "Deploying the contract using cargo stylus..."
-deploy_output=$(cargo stylus deploy -e http://127.0.0.1:8547 --private-key 0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659 2>&1)
+############################################
+# DEPLOY PROTOCOL CONTRACT
+############################################
+echo "=========================================="
+echo "Deploying Protocol Contract..."
+echo "=========================================="
 
-# Check if deployment was successful
+# Enable protocol module in lib.rs
+sed -i 's|^// pub mod marketplace;|// pub mod marketplace;|' src/lib.rs
+sed -i 's|^pub mod protocol;|pub mod protocol;|' src/lib.rs
+
+# Update main.rs to export protocol ABI
+sed -i 's|^    // lancer::marketplace::print_abi|    // lancer::marketplace::print_abi|' src/main.rs
+sed -i 's|^    lancer::protocol::print_abi|    lancer::protocol::print_abi|' src/main.rs
+
+protocol_deploy_output=$(cargo stylus deploy -e http://127.0.0.1:8547 --private-key 0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659 --no-verify 2>&1)
+
 if [[ $? -ne 0 ]]; then
-    echo "Error: Contract deployment failed"
-    echo "Deploy output: $deploy_output"
+    echo "Error: Protocol contract deployment failed"
+    echo "Deploy output: $protocol_deploy_output"
     exit 1
 fi
 
-# Extract deployment transaction hash using robust pattern
-deployment_tx=$(echo "$deploy_output" | grep -i "transaction\|tx" | grep -oE '0x[a-fA-F0-9]{64}' | head -1)
+protocol_tx=$(echo "$protocol_deploy_output" | grep -oE '0x[a-fA-F0-9]{64}' | head -1)
+protocol_address=$(echo "$protocol_deploy_output" | grep -oE '0x[a-fA-F0-9]{40}' | head -1)
 
-# Extract contract address using robust pattern
-contract_address=$(echo "$deploy_output" | grep -i "contract\|deployed" | grep -oE '0x[a-fA-F0-9]{40}' | head -1)
-
-# Fallback extraction if above patterns don't work
-if [[ -z "$deployment_tx" ]]; then
-    deployment_tx=$(echo "$deploy_output" | grep -oE '0x[a-fA-F0-9]{64}' | head -1)
-fi
-
-if [[ -z "$contract_address" ]]; then
-    contract_address=$(echo "$deploy_output" | grep -oE '0x[a-fA-F0-9]{40}' | head -1)
-fi
-
-# Verify extraction was successful
-if [[ -z "$deployment_tx" ]]; then
-    echo "Error: Could not extract deployment transaction hash from output"
-    echo "Deploy output: $deploy_output"
+if [[ -z "$protocol_tx" || -z "$protocol_address" ]]; then
+    echo "Error: Could not extract Protocol contract deployment info"
+    echo "Deploy output: $protocol_deploy_output"
     exit 1
 fi
 
-echo "Stylus contract deployed successfully!"
-echo "Transaction hash: $deployment_tx"
+echo "✅ Protocol Contract deployed successfully!"
+echo "   Address: $protocol_address"
+echo "   TX Hash: $protocol_tx"
 
-if [[ ! -z "$contract_address" ]]; then
-    echo "Contract address: $contract_address"
-fi
+# Generate Protocol ABI
+echo "Generating Protocol ABI..."
+cargo stylus export-abi > build/protocol.abi
+echo "✅ Protocol ABI saved to build/protocol.abi"
 
 ############################################
-# Generate the ABI for the deployed contract
-echo "Generating ABI for the deployed contract..."
-cargo stylus export-abi > stylus-contract.abi
+# DEPLOY MARKETPLACE CONTRACT
+############################################
+echo ""
+echo "=========================================="
+echo "Deploying Marketplace Contract..."
+echo "=========================================="
 
-# Verify if ABI generation was successful
+# Enable marketplace module, disable protocol in lib.rs
+sed -i 's|^// pub mod marketplace;|pub mod marketplace;|' src/lib.rs
+sed -i 's|^pub mod protocol;|// pub mod protocol;|' src/lib.rs
+
+# Update main.rs to export marketplace ABI
+sed -i 's|^    lancer::protocol::print_abi|    // lancer::protocol::print_abi|' src/main.rs
+sed -i 's|^    // lancer::marketplace::print_abi|    lancer::marketplace::print_abi|' src/main.rs
+
+marketplace_deploy_output=$(cargo stylus deploy -e http://127.0.0.1:8547 --private-key 0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659 --no-verify 2>&1)
+
 if [[ $? -ne 0 ]]; then
-  echo "Error: ABI generation failed."
-  exit 1
+    echo "Error: Marketplace contract deployment failed"
+    echo "Deploy output: $marketplace_deploy_output"
+    exit 1
 fi
 
-echo "ABI generated successfully and saved to stylus-contract.abi"
+marketplace_tx=$(echo "$marketplace_deploy_output" | grep -oE '0x[a-fA-F0-9]{64}' | head -1)
+marketplace_address=$(echo "$marketplace_deploy_output" | grep -oE '0x[a-fA-F0-9]{40}' | head -1)
 
-# Create build directory if it doesn't exist
+if [[ -z "$marketplace_tx" || -z "$marketplace_address" ]]; then
+    echo "Error: Could not extract Marketplace contract deployment info"
+    echo "Deploy output: $marketplace_deploy_output"
+    exit 1
+fi
+
+echo "✅ Marketplace Contract deployed successfully!"
+echo "   Address: $marketplace_address"
+echo "   TX Hash: $marketplace_tx"
+
+# Generate Marketplace ABI
+echo "Generating Marketplace ABI..."
+cargo stylus export-abi > build/marketplace.abi
+echo "✅ Marketplace ABI saved to build/marketplace.abi"
+
+# Restore lib.rs to default (protocol enabled)
+sed -i 's|^pub mod marketplace;|// pub mod marketplace;|' src/lib.rs
+sed -i 's|^// pub mod protocol;|pub mod protocol;|' src/lib.rs
+
+# Restore main.rs to default (protocol enabled)
+sed -i 's|^    lancer::marketplace::print_abi|    // lancer::marketplace::print_abi|' src/main.rs
+sed -i 's|^    // lancer::protocol::print_abi|    lancer::protocol::print_abi|' src/main.rs
+
+############################################
+# SAVE DEPLOYMENT INFO
+############################################
 mkdir -p build
 
-# Save deployment info to JSON file
 echo "{
   \"network\": \"nitro-dev\",
-  \"cache_manager_address\": \"$cache_manager_address\",
-  \"contract_address\": \"${contract_address:-'N/A'}\",
-  \"transaction_hash\": \"$deployment_tx\",
   \"rpc_url\": \"http://127.0.0.1:8547\",
-  \"deployment_time\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+  \"deployment_time\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",
+  \"cache_manager_address\": \"$cache_manager_address\",
+  \"protocol_contract\": {
+    \"address\": \"$protocol_address\",
+    \"transaction_hash\": \"$protocol_tx\",
+    \"abi_file\": \"build/protocol.abi\"
+  },
+  \"marketplace_contract\": {
+    \"address\": \"$marketplace_address\",
+    \"transaction_hash\": \"$marketplace_tx\",
+    \"abi_file\": \"build/marketplace.abi\"
+  }
 }" > build/stylus-deployment-info.json
 
-echo "Deployment info saved to build/stylus-deployment-info.json"
-echo "Deployment completed successfully on Nitro dev node!"
+echo ""
+echo "=========================================="
+echo "✅ DEPLOYMENT COMPLETED SUCCESSFULLY!"
+echo "=========================================="
+echo "Protocol Contract:    $protocol_address"
+echo "Marketplace Contract: $marketplace_address"
+echo "Deployment info saved to: build/stylus-deployment-info.json"
+echo "=========================================="
 
 # Keep the script running but also monitor the Nitro node
 while true; do

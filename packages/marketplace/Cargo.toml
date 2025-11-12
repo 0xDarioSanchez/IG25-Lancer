@@ -1,12 +1,12 @@
 [package]
-name = "lancer"
+name = "lancer-marketplace"
 version = "0.1.9"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 homepage = "https://github.com/0xDarioSanchez/IG25-Lancer"
 repository = "https://github.com/0xDarioSanchez/IG25-Lancer"
 keywords = ["arbitrum", "ethereum", "stylus", "alloy"]
-description = "Lancer Protocol - Decentralized marketplace with dispute resolution"
+description = "Lancer Marketplace - Deal management and dispute integration"
 
 [dependencies]
 alloy-primitives = "=0.7.6"
@@ -26,11 +26,11 @@ export-abi = ["stylus-sdk/export-abi"]
 debug = ["stylus-sdk/debug"]
 
 [[bin]]
-name = "lancer-abi"
+name = "marketplace-abi"
 path = "src/main.rs"
 
 [lib]
-name = "lancer"
+name = "lancer_marketplace"
 crate-type = ["lib", "cdylib"]
 
 [profile.release]

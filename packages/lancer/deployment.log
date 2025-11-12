@@ -1,0 +1,125 @@
+Starting Nitro dev node...
+Waiting for the Nitro node to initialize...
+WARN [11-12|19:26:53.574] Chain info field parent-chain-is-arbitrum is missing, in the future this will be required chainId=412,346 parentChainId=0
+INFO [11-12|19:26:53.582] created jwt file                         filename=/home/user/.arbitrum/jwtsecret
+INFO [11-12|19:26:53.582] Running Arbitrum nitro node              revision=v3.2.1-d81324d vcs.time=2024-09-24T10:12:36-05:00
+INFO [11-12|19:26:53.582] Defaulting to pebble as the backing database
+INFO [11-12|19:26:53.582] Allocated cache and file handles         database=/tmp/dev-test/nitro/l2chaindata cache=16.00MiB handles=16
+INFO [11-12|19:26:53.582] Defaulting to pebble as the backing database
+INFO [11-12|19:26:53.582] Allocated cache and file handles         database=/tmp/dev-test/nitro/l2chaindata cache=2.00GiB handles=512
+INFO [11-12|19:26:53.593] Opened ancient database                  database=/tmp/dev-test/nitro/l2chaindata/ancient/chain readonly=false
+INFO [11-12|19:26:53.594] Defaulting to pebble as the backing database
+INFO [11-12|19:26:53.594] Allocated cache and file handles         database=/tmp/dev-test/nitro/wasm cache=2.00GiB handles=512
+INFO [11-12|19:26:53.599] State scheme set by user                 scheme=hash
+INFO [11-12|19:26:53.600] Setting codehash position in rebuilding of wasm store to done
+INFO [11-12|19:26:53.600] Initializing                             ancients=0 genesisBlockNr=0
+WARN [11-12|19:26:53.600] Created fake init message as L1Reader is disabled and serialized chain config from init message is not available json="{\"chainId\":412346,\"homesteadBlock\":0,\"daoForkSupport\":true,\"eip150Block\":0,\"eip155Block\":0,\"eip158Block\":0,\"byzantiumBlock\":0,\"constantinopleBlock\":0,\"petersburgBlock\":0,\"istanbulBlock\":0,\"muirGlacierBlock\":0,\"berlinBlock\":0,\"londonBlock\":0,\"clique\":{\"period\":0,\"epoch\":0},\"arbitrum\":{\"EnableArbOS\":true,\"AllowDebugPrecompiles\":true,\"DataAvailabilityCommittee\":false,\"InitialArbOSVersion\":32,\"InitialChainOwner\":\"0x0000000000000000000000000000000000000000\",\"GenesisBlockNum\":0}}"
+ERROR[11-12|19:26:53.600] Zero state root hash!
+ERROR[11-12|19:26:53.600] Zero state root hash!
+INFO [11-12|19:26:53.601] addresss table import complete
+INFO [11-12|19:26:53.601] retryables import complete
+INFO [11-12|19:26:53.603] Persisted trie from memory database      nodes=82 size=9.33KiB time=1.279999ms gcnodes=0 gcsize=0.00B gctime=0s livenodes=0 livesize=0.00B
+INFO [11-12|19:26:53.605] Persisted trie from memory database      nodes=4  size=806.00B time="608.215µs" gcnodes=0 gcsize=0.00B gctime=0s livenodes=0 livesize=0.00B
+INFO [11-12|19:26:53.610] wrote genesis block                      number=0 hash=ada78e..915675
+INFO [11-12|19:26:53.611] 
+INFO [11-12|19:26:53.611] ---------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO [11-12|19:26:53.611] Chain ID:  412346 (unknown)
+INFO [11-12|19:26:53.611] Consensus: Clique (proof-of-authority)
+INFO [11-12|19:26:53.611] 
+INFO [11-12|19:26:53.612] Pre-Merge hard forks (block based):
+INFO [11-12|19:26:53.612]  - Homestead:                   #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/homestead.md)
+INFO [11-12|19:26:53.612]  - Tangerine Whistle (EIP 150): #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/tangerine-whistle.md)
+INFO [11-12|19:26:53.612]  - Spurious Dragon/1 (EIP 155): #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)
+INFO [11-12|19:26:53.612]  - Spurious Dragon/2 (EIP 158): #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)
+INFO [11-12|19:26:53.612]  - Byzantium:                   #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/byzantium.md)
+INFO [11-12|19:26:53.612]  - Constantinople:              #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/constantinople.md)
+INFO [11-12|19:26:53.612]  - Petersburg:                  #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/petersburg.md)
+INFO [11-12|19:26:53.612]  - Istanbul:                    #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md)
+INFO [11-12|19:26:53.612]  - Muir Glacier:                #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/muir-glacier.md)
+INFO [11-12|19:26:53.612]  - Berlin:                      #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md)
+INFO [11-12|19:26:53.612]  - London:                      #0        (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/london.md)
+INFO [11-12|19:26:53.612] 
+INFO [11-12|19:26:53.612] The Merge is not yet available for this network!
+INFO [11-12|19:26:53.612]  - Hard-fork specification: https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md
+INFO [11-12|19:26:53.612] 
+INFO [11-12|19:26:53.612] Post-Merge hard forks (timestamp based):
+INFO [11-12|19:26:53.612] 
+INFO [11-12|19:26:53.612] ---------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO [11-12|19:26:53.612] 
+INFO [11-12|19:26:53.612] Loaded most recent local block           number=0 hash=ada78e..915675 td=1 age=56y8mo4d
+WARN [11-12|19:26:53.612] Failed to load snapshot                  err="missing or corrupted snapshot"
+INFO [11-12|19:26:53.613] Rebuilding state snapshot
+INFO [11-12|19:26:53.614] Initialized transaction indexer          range="last 126230400 blocks"
+INFO [11-12|19:26:53.614] Resuming state snapshot generation       root=ea1bc4..eabb0d accounts=0 slots=0 storage=0.00B dangling=0 elapsed="951.999µs"
+INFO [11-12|19:26:53.615] Setting rebuilding of wasm store to done
+INFO [11-12|19:26:53.615] Generated state snapshot                 accounts=18 slots=43 storage=4.56KiB dangling=0 elapsed=1.870ms
+INFO [11-12|19:26:53.615] Defaulting to pebble as the backing database
+INFO [11-12|19:26:53.615] Allocated cache and file handles         database=/tmp/dev-test/nitro/arbitrumdata cache=16.00MiB handles=16
+WARN [11-12|19:26:53.620] sequencer enabled without l1 client
+INFO [11-12|19:26:53.622] Starting peer-to-peer node               instance=nitro/v3.2.1-d81324d/linux-amd64/go1.21.10
+WARN [11-12|19:26:53.622] P2P server will be useless, neither dialing nor listening
+INFO [11-12|19:26:53.627] HTTP server started                      endpoint=[::]:8547 auth=false prefix= cors=* vhosts=localhost
+INFO [11-12|19:26:53.627] New local node record                    seq=1,762,975,613,627 id=3f11c6dd852230a3 ip=127.0.0.1 udp=0 tcp=0
+INFO [11-12|19:26:53.627] Started P2P networking                   self=enode://fa53a1dacd4ded34aa2dc3a773fb6819a760d246e76087312065aed537f1ad6dc10664147f9de94f281ef65beecb39000a612448acd9950405369612daab632c@127.0.0.1:0
+Nitro node is running!
+Setting chain owner to pre-funded dev account...
+INFO [11-12|19:26:54.581] Submitted transaction                    hash=0xbe7ec1ff63e0a3318c2d83516e853c7f9aabddec70b41e431d6f6e947dfc8a57 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=0 recipient=0x00000000000000000000000000000000000000ff value=0
+INFO [11-12|19:26:54.582] Indexed transactions                     blocks=2 txs=2 tail=0 elapsed="566.535µs"
+
+blockHash            0x7a5d6103593dd8d4d6fce3c1ca6088d025a39cdb6a054e10e6e545fd8cc4e465
+blockNumber          1
+contractAddress      
+cumulativeGasUsed    1020264
+effectiveGasPrice    100000000
+from                 0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E
+gasUsed              1020264
+logs                 []
+logsBloom            0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+root                 
+status               1 (success)
+transactionHash      0xbe7ec1ff63e0a3318c2d83516e853c7f9aabddec70b41e431d6f6e947dfc8a57
+transactionIndex     1
+type                 2
+blobGasPrice         
+blobGasUsed          
+to                   0x00000000000000000000000000000000000000ff
+gasUsedForL1         936000
+l1BlockNumber        0
+
+Deploying Cache Manager contract...
+INFO [11-12|19:26:54.593] Submitted contract creation              hash=0xc1131b070db52dfe664e10f3b02261c7476424050dc0095e04f8447ae93c81d6 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=1 contract=0x11B57FE348584f042E436c6Bf7c3c3deF171de49 value=0
+Cache Manager contract deployed at address: 0x11B57FE348584f042E436c6Bf7c3c3deF171de49
+Registering Cache Manager contract as a WASM cache manager...
+INFO [11-12|19:26:54.841] Submitted transaction                    hash=0x5084e9fd6fe32ca14b701cab39293be2d9dbd108084cd68390cbc0609e39c089 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=2 recipient=0x0000000000000000000000000000000000000070 value=0
+Cache Manager deployed and registered successfully.
+==========================================
+Deploying Protocol Contract...
+==========================================
+WARN [11-12|19:26:56.752] Served eth_call                          conn=172.17.0.1:54730 reqid=0 duration="518.878µs" err="execution reverted: error ProgramNotActivated()" errdata=0x6f809c4e
+INFO [11-12|19:26:57.272] Submitted contract creation              hash=0x40a76fc25ede11a8156f78a9962d5cc0f0e85fb59b95049f7195e7443d89490b from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=3 contract=0xA6E41fFD769491a42A6e5Ce453259b93983a22EF value=0
+INFO [11-12|19:26:57.486] Submitted transaction                    hash=0x16358b6f9d541d2c1ee571db09fc3c83c4f1b4bb460d96587b105befe509799d from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=4 recipient=0x0000000000000000000000000000000000000071 value=143,764,516,089,402
+✅ Protocol Contract deployed successfully!
+   Address: 0xa6e41ffd769491a42a6e5ce453259b93983a22ef
+   TX Hash: 0x40a76fc25ede11a8156f78a9962d5cc0f0e85fb59b95049f7195e7443d89490b
+Generating Protocol ABI...
+✅ Protocol ABI saved to build/protocol.abi
+
+==========================================
+Deploying Marketplace Contract...
+==========================================
+WARN [11-12|19:26:59.619] Served eth_call                          conn=172.17.0.1:55346 reqid=0 duration="300.2µs" err="execution reverted: error ProgramNotActivated()" errdata=0x6f809c4e
+INFO [11-12|19:27:01.623] Submitted contract creation              hash=0x32198bf716a804bc1770a86d50434605f06d2bc7a589a2207db59ac329b127f5 from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=5 contract=0x7E32b54800705876d3b5cFbc7d9c226a211F7C1a value=0
+INFO [11-12|19:27:01.841] Submitted transaction                    hash=0x8409ebf7cade000cd8f30e24f398101be7130f5a583b6e7c3735880c2becf2ba from=0x3f1Eae7D46d88F08fc2F8ed27FCb2AB183EB2d0E nonce=6 recipient=0x0000000000000000000000000000000000000071 value=161,748,745,808,448
+✅ Marketplace Contract deployed successfully!
+   Address: 0x7e32b54800705876d3b5cfbc7d9c226a211f7c1a
+   TX Hash: 0x32198bf716a804bc1770a86d50434605f06d2bc7a589a2207db59ac329b127f5
+Generating Marketplace ABI...
+✅ Marketplace ABI saved to build/marketplace.abi
+
+==========================================
+✅ DEPLOYMENT COMPLETED SUCCESSFULLY!
+==========================================
+Protocol Contract:    0xa6e41ffd769491a42a6e5ce453259b93983a22ef
+Marketplace Contract: 0x7e32b54800705876d3b5cfbc7d9c226a211f7c1a
+Deployment info saved to: build/stylus-deployment-info.json
+==========================================

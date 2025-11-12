@@ -14,6 +14,8 @@
 #![cfg_attr(not(feature = "export-abi"), no_main)]
 
 // Only one entrypoint can be active at a time
-// Comment/uncomment to switch between contracts
-// pub mod marketplace;
+// To switch contracts:
+// 1. Comment/uncomment the module you want below
+// 2. Update main.rs to match
 pub mod protocol;
+// pub mod marketplace;

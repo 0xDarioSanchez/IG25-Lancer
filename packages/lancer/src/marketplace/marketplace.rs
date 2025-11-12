@@ -97,32 +97,12 @@ sol! {
     event DisputeResolved(uint64 indexed dispute_id, address indexed winner);
     event NewFeePercent(uint8 new_fee_percent);
     
-    error NotOwner();
-    error NotUser();
-    error NotBeneficiary();
-    error NotPayer();
-    error DealDoesNotExist();
-    error DisputeDoesNotExist();
-    error UserAlreadyRegistered();
-    error AtLeastOneRoleMustBeTrue();
-    error AmountMustBeGreaterThanZero();
-    error InvalidPayerAddress();
-    error UserNotRegisteredAsBeneficiary();
-    error TargetNotRegisteredAsPayer();
-    error OnlyPayerCanUpdateDeal();
-    error DealAlreadyAccepted();
-    error DurationMustBeGreaterThanZero();
-    error OnlyPayerCanRejectDeal();
-    error DealNotAccepted();
-    error DealIsDisputed();
-    error DealDurationNotSufficient();
-    error DealAlreadyDisputed();
-    error OnlyRequesterCanAddEvidence();
-    error ProofCannotBeEmpty();
-    error OnlyBeneficiaryCanAddEvidence();
-    error OnlyInvolvedPartiesCanExecute();
+    error Unauthorized();
+    error NotFound();
+    error AlreadyExists();
+    error InvalidInput();
+    error InvalidState();
     error InsufficientBalance();
-    error TransferFailed();
     error CallFailed();
 }
 
@@ -132,32 +112,12 @@ sol! {
 
 #[derive(SolidityError)]
 pub enum MarketplaceError {
-    NotOwner(NotOwner),
-    NotUser(NotUser),
-    NotBeneficiary(NotBeneficiary),
-    NotPayer(NotPayer),
-    DealDoesNotExist(DealDoesNotExist),
-    DisputeDoesNotExist(DisputeDoesNotExist),
-    UserAlreadyRegistered(UserAlreadyRegistered),
-    AtLeastOneRoleMustBeTrue(AtLeastOneRoleMustBeTrue),
-    AmountMustBeGreaterThanZero(AmountMustBeGreaterThanZero),
-    InvalidPayerAddress(InvalidPayerAddress),
-    UserNotRegisteredAsBeneficiary(UserNotRegisteredAsBeneficiary),
-    TargetNotRegisteredAsPayer(TargetNotRegisteredAsPayer),
-    OnlyPayerCanUpdateDeal(OnlyPayerCanUpdateDeal),
-    DealAlreadyAccepted(DealAlreadyAccepted),
-    DurationMustBeGreaterThanZero(DurationMustBeGreaterThanZero),
-    OnlyPayerCanRejectDeal(OnlyPayerCanRejectDeal),
-    DealNotAccepted(DealNotAccepted),
-    DealIsDisputed(DealIsDisputed),
-    DealDurationNotSufficient(DealDurationNotSufficient),
-    DealAlreadyDisputed(DealAlreadyDisputed),
-    OnlyRequesterCanAddEvidence(OnlyRequesterCanAddEvidence),
-    ProofCannotBeEmpty(ProofCannotBeEmpty),
-    OnlyBeneficiaryCanAddEvidence(OnlyBeneficiaryCanAddEvidence),
-    OnlyInvolvedPartiesCanExecute(OnlyInvolvedPartiesCanExecute),
+    Unauthorized(Unauthorized),
+    NotFound(NotFound),
+    AlreadyExists(AlreadyExists),
+    InvalidInput(InvalidInput),
+    InvalidState(InvalidState),
     InsufficientBalance(InsufficientBalance),
-    TransferFailed(TransferFailed),
     CallFailed(CallFailed),
 }
 
@@ -228,7 +188,7 @@ impl Marketplace {
     /// Update the fee percentage
     pub fn set_fee_percent(&mut self, new_fee_percent: u8) -> Result<(), MarketplaceError> {
         if msg::sender() != self.owner.get() {
-            return Err(MarketplaceError::NotOwner(NotOwner {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         self.fee_percent.set(U8::from(new_fee_percent));
@@ -253,12 +213,12 @@ impl Marketplace {
         
         // Check if user already registered
         if user.user_address.get() != Address::ZERO {
-            return Err(MarketplaceError::UserAlreadyRegistered(UserAlreadyRegistered {}));
+            return Err(MarketplaceError::AlreadyExists(AlreadyExists {}));
         }
         
         // User must have at least one role
         if !is_payer && !is_beneficiary && !is_judge {
-            return Err(MarketplaceError::AtLeastOneRoleMustBeTrue(AtLeastOneRoleMustBeTrue {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
         // Set user data
@@ -293,12 +253,12 @@ impl Marketplace {
         
         // Check if user is registered
         if user.user_address.get() != sender {
-            return Err(MarketplaceError::NotUser(NotUser {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // At least one role must be true
         if !is_payer && !is_beneficiary && !is_judge {
-            return Err(MarketplaceError::AtLeastOneRoleMustBeTrue(AtLeastOneRoleMustBeTrue {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
         // Set roles
@@ -333,21 +293,21 @@ impl Marketplace {
         
         // Validate inputs
         if amount == U256::ZERO {
-            return Err(MarketplaceError::AmountMustBeGreaterThanZero(AmountMustBeGreaterThanZero {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         if payer == Address::ZERO {
-            return Err(MarketplaceError::InvalidPayerAddress(InvalidPayerAddress {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
         // Check user roles
         let sender_user = self.users.get(sender);
         if !sender_user.is_beneficiary.get() {
-            return Err(MarketplaceError::UserNotRegisteredAsBeneficiary(UserNotRegisteredAsBeneficiary {}));
+            return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
         let payer_user = self.users.get(payer);
         if !payer_user.is_payer.get() {
-            return Err(MarketplaceError::TargetNotRegisteredAsPayer(TargetNotRegisteredAsPayer {}));
+            return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
         // Get current deal ID
@@ -390,22 +350,22 @@ impl Marketplace {
         
         // Check deal exists
         if deal.amount.get() == U256::ZERO {
-            return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Only payer can update
         if sender != deal.payer.get() {
-            return Err(MarketplaceError::OnlyPayerCanUpdateDeal(OnlyPayerCanUpdateDeal {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Check not accepted
         if deal.accepted.get() {
-            return Err(MarketplaceError::DealAlreadyAccepted(DealAlreadyAccepted {}));
+            return Err(MarketplaceError::AlreadyExists(AlreadyExists {}));
         }
         
         // Validate amount
         if new_amount == U256::ZERO {
-            return Err(MarketplaceError::AmountMustBeGreaterThanZero(AmountMustBeGreaterThanZero {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
         deal.amount.set(new_amount);
@@ -429,22 +389,22 @@ impl Marketplace {
         
         // Check deal exists
         if deal.amount.get() == U256::ZERO {
-            return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Only payer can update
         if sender != deal.payer.get() {
-            return Err(MarketplaceError::OnlyPayerCanUpdateDeal(OnlyPayerCanUpdateDeal {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Check not accepted
         if deal.accepted.get() {
-            return Err(MarketplaceError::DealAlreadyAccepted(DealAlreadyAccepted {}));
+            return Err(MarketplaceError::AlreadyExists(AlreadyExists {}));
         }
         
         // Validate duration
         if new_duration == 0 {
-            return Err(MarketplaceError::DurationMustBeGreaterThanZero(DurationMustBeGreaterThanZero {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
         deal.duration.set(U64::from(new_duration));
@@ -464,17 +424,17 @@ impl Marketplace {
         
         // Check deal exists
         if deal.amount.get() == U256::ZERO {
-            return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Only payer can accept
         if sender != deal.payer.get() {
-            return Err(MarketplaceError::NotPayer(NotPayer {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Check not already accepted
         if deal.accepted.get() {
-            return Err(MarketplaceError::DealAlreadyAccepted(DealAlreadyAccepted {}));
+            return Err(MarketplaceError::AlreadyExists(AlreadyExists {}));
         }
         
         let amount = deal.amount.get();
@@ -505,17 +465,17 @@ impl Marketplace {
         
         // Check deal exists
         if deal.amount.get() == U256::ZERO {
-            return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Only payer can reject
         if sender != deal.payer.get() {
-            return Err(MarketplaceError::OnlyPayerCanRejectDeal(OnlyPayerCanRejectDeal {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Check not accepted
         if deal.accepted.get() {
-            return Err(MarketplaceError::DealAlreadyAccepted(DealAlreadyAccepted {}));
+            return Err(MarketplaceError::AlreadyExists(AlreadyExists {}));
         }
         
         // Delete deal (reset to default values)
@@ -541,22 +501,22 @@ impl Marketplace {
         
         // Check deal exists
         if deal.amount.get() == U256::ZERO {
-            return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Only payer can finish
         if sender != deal.payer.get() {
-            return Err(MarketplaceError::NotPayer(NotPayer {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Check deal is accepted
         if !deal.accepted.get() {
-            return Err(MarketplaceError::DealNotAccepted(DealNotAccepted {}));
+            return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
         // Check not disputed
         if deal.disputed.get() {
-            return Err(MarketplaceError::DealIsDisputed(DealIsDisputed {}));
+            return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
         let amount = deal.amount.get();
@@ -595,22 +555,22 @@ impl Marketplace {
         
         // Check deal exists
         if deal.amount.get() == U256::ZERO {
-            return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Only beneficiary can request payment
         if sender != deal.beneficiary.get() {
-            return Err(MarketplaceError::NotBeneficiary(NotBeneficiary {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Check deal is accepted
         if !deal.accepted.get() {
-            return Err(MarketplaceError::DealNotAccepted(DealNotAccepted {}));
+            return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
         // Check not disputed
         if deal.disputed.get() {
-            return Err(MarketplaceError::DealIsDisputed(DealIsDisputed {}));
+            return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
         // Check duration + 1 week has passed
@@ -620,7 +580,7 @@ impl Marketplace {
         let current_time = U256::from(block::timestamp());
         
         if current_time < required_time {
-            return Err(MarketplaceError::DealDurationNotSufficient(DealDurationNotSufficient {}));
+            return Err(MarketplaceError::InvalidState(InvalidState {}));
         }
         
         let amount = deal.amount.get();
@@ -666,22 +626,22 @@ impl Marketplace {
             
             // Check deal exists
             if deal.amount.get() == U256::ZERO {
-                return Err(MarketplaceError::DealDoesNotExist(DealDoesNotExist {}));
+                return Err(MarketplaceError::NotFound(NotFound {}));
             }
             
             // Only payer can request dispute
             if sender != deal.payer.get() {
-                return Err(MarketplaceError::NotPayer(NotPayer {}));
+                return Err(MarketplaceError::Unauthorized(Unauthorized {}));
             }
             
             // Check deal is accepted
             if !deal.accepted.get() {
-                return Err(MarketplaceError::DealNotAccepted(DealNotAccepted {}));
+                return Err(MarketplaceError::InvalidState(InvalidState {}));
             }
             
             // Check not already disputed
             if deal.disputed.get() {
-                return Err(MarketplaceError::DealAlreadyDisputed(DealAlreadyDisputed {}));
+                return Err(MarketplaceError::AlreadyExists(AlreadyExists {}));
             }
         }
         
@@ -727,17 +687,17 @@ impl Marketplace {
         
         // Check dispute exists
         if dispute.deal_id.get() == U64::ZERO {
-            return Err(MarketplaceError::DisputeDoesNotExist(DisputeDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Only requester can add evidence
         if sender != dispute.requester.get() {
-            return Err(MarketplaceError::OnlyRequesterCanAddEvidence(OnlyRequesterCanAddEvidence {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Proof cannot be empty
         if proof.is_empty() {
-            return Err(MarketplaceError::ProofCannotBeEmpty(ProofCannotBeEmpty {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
         // Call protocol to update dispute
@@ -760,7 +720,7 @@ impl Marketplace {
         
         // Check dispute exists
         if dispute.deal_id.get() == U64::ZERO {
-            return Err(MarketplaceError::DisputeDoesNotExist(DisputeDoesNotExist {}));
+            return Err(MarketplaceError::NotFound(NotFound {}));
         }
         
         // Get deal to verify beneficiary
@@ -769,12 +729,12 @@ impl Marketplace {
         
         // Only beneficiary can add evidence
         if sender != deal.beneficiary.get() {
-            return Err(MarketplaceError::OnlyBeneficiaryCanAddEvidence(OnlyBeneficiaryCanAddEvidence {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         // Proof cannot be empty
         if proof.is_empty() {
-            return Err(MarketplaceError::ProofCannotBeEmpty(ProofCannotBeEmpty {}));
+            return Err(MarketplaceError::InvalidInput(InvalidInput {}));
         }
         
         // Call protocol to update dispute
@@ -800,14 +760,14 @@ impl Marketplace {
             
             // Check dispute exists
             if dispute.deal_id.get() == U64::ZERO {
-                return Err(MarketplaceError::DisputeDoesNotExist(DisputeDoesNotExist {}));
+                return Err(MarketplaceError::NotFound(NotFound {}));
             }
             
             let deal = self.deals.get(U256::from(deal_id));
             
             // Only involved parties can execute
             if sender != dispute.requester.get() && sender != deal.beneficiary.get() {
-                return Err(MarketplaceError::OnlyInvolvedPartiesCanExecute(OnlyInvolvedPartiesCanExecute {}));
+                return Err(MarketplaceError::Unauthorized(Unauthorized {}));
             }
             
             (deal.amount.get(), self.fee_percent.get(), dispute.requester.get(), deal.beneficiary.get())
@@ -868,7 +828,7 @@ impl Marketplace {
         
         // Check user is registered
         if user.user_address.get() != sender {
-            return Err(MarketplaceError::NotUser(NotUser {}));
+            return Err(MarketplaceError::Unauthorized(Unauthorized {}));
         }
         
         let balance = user.balance.get();
@@ -903,16 +863,6 @@ impl Marketplace {
     //        VIEW FUNCTIONS          
     // ====================================
     
-    /// Get owner address
-    pub fn owner(&self) -> Address {
-        self.owner.get()
-    }
-    
-    /// Get USDC token address
-    pub fn usdc(&self) -> Address {
-        self.usdc_token.get()
-    }
-    
     /// Get protocol address
     pub fn protocol_address(&self) -> Address {
         self.protocol.get()
@@ -921,11 +871,6 @@ impl Marketplace {
     /// Get deal ID counter
     pub fn deal_id_counter(&self) -> u64 {
         u64::from_le_bytes(self.deal_id_counter.get().to_le_bytes())
-    }
-    
-    /// Get fee percent
-    pub fn fee_percent(&self) -> u8 {
-        u8::from_le_bytes(self.fee_percent.get().to_le_bytes())
     }
     
     /// Get user info
