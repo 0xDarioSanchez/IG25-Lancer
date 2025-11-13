@@ -577,7 +577,7 @@ impl ProtocolContract {
         &mut self,
         dispute_id: u64,
         vote: bool,
-        secret: Vec<u8>
+        secret: alloy_primitives::Bytes
     ) -> Result<(), ProtocolError> {
         let sender = msg::sender();
         let mut dispute = self.disputes.setter(U64::from(dispute_id));

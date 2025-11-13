@@ -418,42 +418,63 @@ echo "=========================================="
 echo "📋 STEP 11: Reveal Votes"
 echo "=========================================="
 
+# Helper function to convert hex string to uint8 array format
+hex_to_uint8_array() {
+    local hex_string=$1
+    # Remove 0x prefix if present
+    hex_string=${hex_string#0x}
+    # Split into bytes and format as array
+    local array="["
+    for ((i=0; i<${#hex_string}; i+=2)); do
+        local byte="0x${hex_string:$i:2}"
+        array+="$((byte)),"
+    done
+    # Remove trailing comma and close bracket
+    array="${array%,}]"
+    echo "$array"
+}
+
 echo "Judge 1 revealing vote..."
+JUDGE1_SECRET_ARRAY=$(hex_to_uint8_array "$(cast --from-utf8 "$JUDGE1_SECRET")")
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,bytes)" \
-    $DISPUTE_ID $JUDGE1_VOTE "$(cast --from-utf8 "$JUDGE1_SECRET")" \
+    "revealVotes(uint64,bool,uint8[])" \
+    $DISPUTE_ID $JUDGE1_VOTE "$JUDGE1_SECRET_ARRAY" \
     --private-key $JUDGE1_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 2 revealing vote..."
+JUDGE2_SECRET_ARRAY=$(hex_to_uint8_array "$(cast --from-utf8 "$JUDGE2_SECRET")")
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,bytes)" \
-    $DISPUTE_ID $JUDGE2_VOTE "$(cast --from-utf8 "$JUDGE2_SECRET")" \
+    "revealVotes(uint64,bool,uint8[])" \
+    $DISPUTE_ID $JUDGE2_VOTE "$JUDGE2_SECRET_ARRAY" \
     --private-key $JUDGE2_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 3 revealing vote..."
+JUDGE3_SECRET_ARRAY=$(hex_to_uint8_array "$(cast --from-utf8 "$JUDGE3_SECRET")")
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,bytes)" \
-    $DISPUTE_ID $JUDGE3_VOTE "$(cast --from-utf8 "$JUDGE3_SECRET")" \
+    "revealVotes(uint64,bool,uint8[])" \
+    $DISPUTE_ID $JUDGE3_VOTE "$JUDGE3_SECRET_ARRAY" \
     --private-key $JUDGE3_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 4 revealing vote..."
+JUDGE4_SECRET_ARRAY=$(hex_to_uint8_array "$(cast --from-utf8 "$JUDGE4_SECRET")")
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,bytes)" \
-    $DISPUTE_ID $JUDGE4_VOTE "$(cast --from-utf8 "$JUDGE4_SECRET")" \
+    "revealVotes(uint64,bool,uint8[])" \
+    $DISPUTE_ID $JUDGE4_VOTE "$JUDGE4_SECRET_ARRAY" \
     --private-key $JUDGE4_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 5 revealing vote..."
+JUDGE5_SECRET_ARRAY=$(hex_to_uint8_array "$(cast --from-utf8 "$JUDGE5_SECRET")")
 cast send $PROTOCOL_ADDRESS \
-    "revealVotes(uint64,bool,bytes)" \
-    $DISPUTE_ID $JUDGE5_VOTE "$(cast --from-utf8 "$JUDGE5_SECRET")" \
+    "revealVotes(uint64,bool,uint8[])" \
+    $DISPUTE_ID $JUDGE5_VOTE "$JUDGE5_SECRET_ARRAY" \
     --private-key $JUDGE5_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
