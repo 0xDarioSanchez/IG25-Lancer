@@ -55,6 +55,19 @@ JUDGE5_ADDR=$(cast wallet address --private-key $JUDGE5_KEY)
 # Read USDC address from deployment file
 USDC_ADDRESS=$(cat "$DEPLOYMENT_FILE" | jq -r '.usdc_contract.address')
 
+# Convert 0x-prefixed hex into a comma-separated uint8 array for cast inputs
+hex_to_uint8_array() {
+    local hex_string=$1
+    hex_string=${hex_string#0x}
+    local array="["
+    for ((i=0; i<${#hex_string}; i+=2)); do
+        local byte="0x${hex_string:$i:2}"
+        array+="$((byte)),"
+    done
+    array="${array%,}]"
+    echo "$array"
+}
+
 echo "=========================================="
 echo "📋 STEP 0: Fund Test Accounts"
 echo "=========================================="
@@ -238,8 +251,11 @@ cast send $MARKETPLACE_ADDRESS \
 
 echo "✅ Deal created"
 
-# Get the latest deal ID (assuming sequential IDs starting from 0)
-DEAL_ID="0"
+# Get the latest deal ID from counter (counter points to next id)
+NEXT_DEAL_ID_HEX=$(cast call $MARKETPLACE_ADDRESS "dealIdCounter()" --rpc-url $RPC_URL | tr -d '\r\n')
+NEXT_DEAL_ID_DEC=$(cast --to-dec "$NEXT_DEAL_ID_HEX" | tr -d '\r\n')
+DEAL_ID=$((NEXT_DEAL_ID_DEC - 1))
+if [ "$DEAL_ID" -lt 0 ]; then DEAL_ID=0; fi
 echo "Deal ID: $DEAL_ID"
 echo ""
 
@@ -291,8 +307,11 @@ cast send $MARKETPLACE_ADDRESS \
 
 echo "✅ Dispute created"
 
-# Get dispute ID from Protocol (assuming it's dispute ID 0)
-DISPUTE_ID="0"
+# Get dispute ID from protocol counter (counter points to next id)
+NEXT_DISPUTE_ID_HEX=$(cast call $PROTOCOL_ADDRESS "disputeCount()" --rpc-url $RPC_URL | tr -d '\r\n')
+NEXT_DISPUTE_ID_DEC=$(cast --to-dec "$NEXT_DISPUTE_ID_HEX" | tr -d '\r\n')
+DISPUTE_ID=$((NEXT_DISPUTE_ID_DEC - 1))
+if [ "$DISPUTE_ID" -lt 0 ]; then DISPUTE_ID=0; fi
 echo "Dispute ID: $DISPUTE_ID"
 echo ""
 
@@ -302,7 +321,7 @@ echo "=========================================="
 
 echo "Judge 1 registering to vote on dispute $DISPUTE_ID..."
 cast send $PROTOCOL_ADDRESS \
-    "register_to_vote(uint64)" \
+    "registerToVote(uint64)" \
     $DISPUTE_ID \
     --private-key $JUDGE1_KEY \
     --rpc-url $RPC_URL \
@@ -310,7 +329,7 @@ cast send $PROTOCOL_ADDRESS \
 
 echo "Judge 2 registering to vote on dispute $DISPUTE_ID..."
 cast send $PROTOCOL_ADDRESS \
-    "register_to_vote(uint64)" \
+    "registerToVote(uint64)" \
     $DISPUTE_ID \
     --private-key $JUDGE2_KEY \
     --rpc-url $RPC_URL \
@@ -318,7 +337,7 @@ cast send $PROTOCOL_ADDRESS \
 
 echo "Judge 3 registering to vote on dispute $DISPUTE_ID..."
 cast send $PROTOCOL_ADDRESS \
-    "register_to_vote(uint64)" \
+    "registerToVote(uint64)" \
     $DISPUTE_ID \
     --private-key $JUDGE3_KEY \
     --rpc-url $RPC_URL \
@@ -326,7 +345,7 @@ cast send $PROTOCOL_ADDRESS \
 
 echo "Judge 4 registering to vote on dispute $DISPUTE_ID..."
 cast send $PROTOCOL_ADDRESS \
-    "register_to_vote(uint64)" \
+    "registerToVote(uint64)" \
     $DISPUTE_ID \
     --private-key $JUDGE4_KEY \
     --rpc-url $RPC_URL \
@@ -334,7 +353,7 @@ cast send $PROTOCOL_ADDRESS \
 
 echo "Judge 5 registering to vote on dispute $DISPUTE_ID..."
 cast send $PROTOCOL_ADDRESS \
-    "register_to_vote(uint64)" \
+    "registerToVote(uint64)" \
     $DISPUTE_ID \
     --private-key $JUDGE5_KEY \
     --rpc-url $RPC_URL \
@@ -354,59 +373,64 @@ echo "=========================================="
 JUDGE1_VOTE="true"
 JUDGE1_SECRET="secret1"
 JUDGE1_COMMIT=$(cast keccak "$(echo -n "${JUDGE1_VOTE}${JUDGE1_SECRET}")")
+JUDGE1_COMMIT_ARRAY=$(hex_to_uint8_array "$JUDGE1_COMMIT")
 
 JUDGE2_VOTE="true"
 JUDGE2_SECRET="secret2"
 JUDGE2_COMMIT=$(cast keccak "$(echo -n "${JUDGE2_VOTE}${JUDGE2_SECRET}")")
+JUDGE2_COMMIT_ARRAY=$(hex_to_uint8_array "$JUDGE2_COMMIT")
 
 JUDGE3_VOTE="false"
 JUDGE3_SECRET="secret3"
 JUDGE3_COMMIT=$(cast keccak "$(echo -n "${JUDGE3_VOTE}${JUDGE3_SECRET}")")
+JUDGE3_COMMIT_ARRAY=$(hex_to_uint8_array "$JUDGE3_COMMIT")
 
 JUDGE4_VOTE="true"
 JUDGE4_SECRET="secret4"
 JUDGE4_COMMIT=$(cast keccak "$(echo -n "${JUDGE4_VOTE}${JUDGE4_SECRET}")")
+JUDGE4_COMMIT_ARRAY=$(hex_to_uint8_array "$JUDGE4_COMMIT")
 
 JUDGE5_VOTE="true"
 JUDGE5_SECRET="secret5"
 JUDGE5_COMMIT=$(cast keccak "$(echo -n "${JUDGE5_VOTE}${JUDGE5_SECRET}")")
+JUDGE5_COMMIT_ARRAY=$(hex_to_uint8_array "$JUDGE5_COMMIT")
 
 echo "Judge 1 committing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "commitVote(uint64,bytes32)" \
-    $DISPUTE_ID $JUDGE1_COMMIT \
+    "commitVote(uint64,uint8[32])" \
+    $DISPUTE_ID "$JUDGE1_COMMIT_ARRAY" \
     --private-key $JUDGE1_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 2 committing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "commitVote(uint64,bytes32)" \
-    $DISPUTE_ID $JUDGE2_COMMIT \
+    "commitVote(uint64,uint8[32])" \
+    $DISPUTE_ID "$JUDGE2_COMMIT_ARRAY" \
     --private-key $JUDGE2_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 3 committing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "commitVote(uint64,bytes32)" \
-    $DISPUTE_ID $JUDGE3_COMMIT \
+    "commitVote(uint64,uint8[32])" \
+    $DISPUTE_ID "$JUDGE3_COMMIT_ARRAY" \
     --private-key $JUDGE3_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 4 committing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "commitVote(uint64,bytes32)" \
-    $DISPUTE_ID $JUDGE4_COMMIT \
+    "commitVote(uint64,uint8[32])" \
+    $DISPUTE_ID "$JUDGE4_COMMIT_ARRAY" \
     --private-key $JUDGE4_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
 
 echo "Judge 5 committing vote..."
 cast send $PROTOCOL_ADDRESS \
-    "commitVote(uint64,bytes32)" \
-    $DISPUTE_ID $JUDGE5_COMMIT \
+    "commitVote(uint64,uint8[32])" \
+    $DISPUTE_ID "$JUDGE5_COMMIT_ARRAY" \
     --private-key $JUDGE5_KEY \
     --rpc-url $RPC_URL \
     --gas-limit 5000000
@@ -417,22 +441,6 @@ echo ""
 echo "=========================================="
 echo "📋 STEP 11: Reveal Votes"
 echo "=========================================="
-
-# Helper function to convert hex string to uint8 array format
-hex_to_uint8_array() {
-    local hex_string=$1
-    # Remove 0x prefix if present
-    hex_string=${hex_string#0x}
-    # Split into bytes and format as array
-    local array="["
-    for ((i=0; i<${#hex_string}; i+=2)); do
-        local byte="0x${hex_string:$i:2}"
-        array+="$((byte)),"
-    done
-    # Remove trailing comma and close bracket
-    array="${array%,}]"
-    echo "$array"
-}
 
 echo "Judge 1 revealing vote..."
 JUDGE1_SECRET_ARRAY=$(hex_to_uint8_array "$(cast --from-utf8 "$JUDGE1_SECRET")")
@@ -487,21 +495,27 @@ echo "📋 STEP 11: Check Results"
 echo "=========================================="
 
 echo "Getting dispute vote results..."
-VOTE_RESULTS=$(cast call $PROTOCOL_ADDRESS \
-    "get_dispute_votes(uint64)(uint8,uint8)" \
-    $DISPUTE_ID \
-    --rpc-url $RPC_URL)
+RAW_RET=$(cast call $PROTOCOL_ADDRESS "getDisputeVotes(uint64)" $DISPUTE_ID --rpc-url $RPC_URL | tr -d '\r\n')
+# Manual ABI decode two uint8 from return data
+RET_HEX=${RAW_RET#0x}
+WORD1=${RET_HEX:0:64}
+WORD2=${RET_HEX:64:64}
+VOTES_FOR_REQUESTER=$(cast --to-dec 0x$WORD1)
+VOTES_FOR_BENEFICIARY=$(cast --to-dec 0x$WORD2)
 
-echo "Vote Results: $VOTE_RESULTS"
-echo "  Votes For Requester (Buyer):  $(echo $VOTE_RESULTS | cut -d' ' -f1)"
-echo "  Votes For Beneficiary (Seller): $(echo $VOTE_RESULTS | cut -d' ' -f2)"
+echo "Vote Results: $VOTES_FOR_REQUESTER $VOTES_FOR_BENEFICIARY"
+echo "  Votes For Requester (Buyer):  $VOTES_FOR_REQUESTER"
+echo "  Votes For Beneficiary (Seller): $VOTES_FOR_BENEFICIARY"
 echo ""
 
 echo "Getting dispute winner..."
-WINNER=$(cast call $PROTOCOL_ADDRESS \
-    "getDisputeWinner(uint64)(bool)" \
-    $DISPUTE_ID \
-    --rpc-url $RPC_URL)
+RAW_WINNER=$(cast call $PROTOCOL_ADDRESS "getDisputeWinner(uint64)" $DISPUTE_ID --rpc-url $RPC_URL | tr -d '\r\n')
+# Manual ABI decode bool from first 32-byte word
+RET2_HEX=${RAW_WINNER#0x}
+WORD=${RET2_HEX:0:64}
+WIN_VAL=$(cast --to-dec 0x$WORD)
+WINNER="false"
+if [ "$WIN_VAL" -ne 0 ]; then WINNER="true"; fi
 
 if [ "$WINNER" == "true" ]; then
     echo "🏆 Winner: Buyer (Requester)"

@@ -80,6 +80,7 @@ sol! {
     event JudgeRegistered(address indexed judge);
     event DisputeCreated(uint256 indexed dispute_id, address indexed requester, address indexed contract_address);
     event DisputeResolved(uint256 indexed dispute_id, address winner);
+    event DebugJudgeStep(uint8 step, address judge);
     
     error NotOwner();
     error AlreadyRegistered();
@@ -351,46 +352,60 @@ impl ProtocolContract {
     /// Register to vote on a dispute
     pub fn register_to_vote(&mut self, dispute_id: u64) -> Result<(), ProtocolError> {
         let sender = msg::sender();
+        evm::log(DebugJudgeStep { step: 1, judge: sender });
         let judge = self.judges.get(sender);
         
         if judge.judge_address.get() == Address::ZERO {
+            evm::log(DebugJudgeStep { step: 2, judge: sender });
             return Err(ProtocolError::NotAJudge(NotAJudge {}));
         }
         
         let reputation = i8::from_le_bytes(judge.reputation.get().to_le_bytes());
         if reputation < -3 {
+            evm::log(DebugJudgeStep { step: 3, judge: sender });
             return Err(ProtocolError::NotEnoughReputation(NotEnoughReputation {}));
         }
         
-        let dispute = self.disputes.get(U64::from(dispute_id));
-        
-        if !dispute.waiting_for_judges.get() {
-            return Err(ProtocolError::JudgesAlreadyAssigned(JudgesAlreadyAssigned {}));
-        }
-        
-        // Check if judge already registered
-        let able_count = dispute.able_to_vote_count.get();
-        for i in 0..able_count.as_limbs()[0] {
-            let judge_addr = dispute.able_to_vote.get(U256::from(i));
-            if judge_addr == sender {
-                return Err(ProtocolError::JudgeAlreadyRegistered(JudgeAlreadyRegistered {}));
+        // Inspect dispute in a limited scope to avoid overlapping borrows
+        let able_count = {
+            let dispute_view = self.disputes.get(U64::from(dispute_id));
+            evm::log(DebugJudgeStep { step: 4, judge: sender });
+
+            if !dispute_view.waiting_for_judges.get() {
+                evm::log(DebugJudgeStep { step: 5, judge: sender });
+                return Err(ProtocolError::JudgesAlreadyAssigned(JudgesAlreadyAssigned {}));
             }
-        }
+
+            let count = dispute_view.able_to_vote_count.get();
+            evm::log(DebugJudgeStep { step: 6, judge: sender });
+            for i in 0..count.as_limbs()[0] {
+                let judge_addr = dispute_view.able_to_vote.get(U256::from(i));
+                if judge_addr == sender {
+                    evm::log(DebugJudgeStep { step: 7, judge: sender });
+                    return Err(ProtocolError::JudgeAlreadyRegistered(JudgeAlreadyRegistered {}));
+                }
+            }
+
+            evm::log(DebugJudgeStep { step: 8, judge: sender });
+            count
+        };
         
-        // Add judge to able_to_vote list
+        // Safe to mutate once the read-only guard above drops
+        evm::log(DebugJudgeStep { step: 9, judge: sender });
         let mut dispute_mut = self.disputes.setter(U64::from(dispute_id));
-        let current_count = dispute_mut.able_to_vote_count.get();
-        dispute_mut.able_to_vote.setter(current_count).set(sender);
-        let new_count = current_count + U256::from(1u64);
+        dispute_mut.able_to_vote.setter(able_count).set(sender);
+        let new_count = able_count + U256::from(1u64);
         dispute_mut.able_to_vote_count.set(new_count);
         
         // Check if we have enough judges
         let required_votes = u64::from_le_bytes(self.number_of_votes.get().to_le_bytes());
         if new_count == U256::from(required_votes) {
+            evm::log(DebugJudgeStep { step: 10, judge: sender });
             dispute_mut.waiting_for_judges.set(false);
             dispute_mut.is_open.set(true);
         }
         
+        evm::log(DebugJudgeStep { step: 11, judge: sender });
         Ok(())
     }
     
@@ -577,7 +592,7 @@ impl ProtocolContract {
         &mut self,
         dispute_id: u64,
         vote: bool,
-        secret: alloy_primitives::Bytes
+        secret: Vec<u8>
     ) -> Result<(), ProtocolError> {
         let sender = msg::sender();
         let mut dispute = self.disputes.setter(U64::from(dispute_id));
@@ -611,13 +626,16 @@ impl ProtocolContract {
         // Verify the commit hash
         let stored_commit = dispute.vote_commits.get(U256::from(idx));
         
-        // Compute keccak256(vote || secret)
+        // Compute keccak256(vote_string || secret)
+        // vote_string is "true" or "false" as bytes
+        let vote_string = if vote { "true" } else { "false" };
         let mut data = Vec::new();
-        data.extend_from_slice(if vote { "true" } else { "false" }.as_bytes());
+        data.extend_from_slice(vote_string.as_bytes());
         data.extend_from_slice(&secret);
-        let recomputed = keccak(data.as_slice());
+        let recomputed = keccak(&data);
 
         if stored_commit != recomputed {
+            // Hash mismatch - invalid reveal
             return Err(ProtocolError::ProofCannotBeEmpty(ProofCannotBeEmpty {}));
         }
 
@@ -733,6 +751,47 @@ impl ProtocolContract {
         // votes_against means vote for beneficiary/seller
         // Return true if requester wins (votes_for > votes_against)
         Ok(votes_for > votes_against)
+    }
+    
+    /// Debug helper to inspect judge registration preconditions
+    pub fn debug_register_to_vote_status(
+        &self,
+        dispute_id: u64,
+        judge_addr: Address,
+    ) -> (bool, I8, bool, bool, bool, bool, U256) {
+        let judge = self.judges.get(judge_addr);
+        let is_registered_judge = judge.judge_address.get() != Address::ZERO;
+        let reputation = judge.reputation.get();
+        let enough_reputation = i8::from_le_bytes(reputation.to_le_bytes()) >= -3;
+
+        let dispute_key = U64::from(dispute_id);
+        let dispute = self.disputes.get(dispute_key);
+        let dispute_exists = dispute.dispute_id.get() != U32::ZERO
+            || dispute.contract_address.get() != Address::ZERO
+            || dispute.waiting_for_judges.get()
+            || dispute.is_open.get()
+            || dispute.resolved.get();
+        let waiting_for_judges = dispute.waiting_for_judges.get();
+
+        let able_count = dispute.able_to_vote_count.get();
+        let mut already_registered = false;
+        for i in 0..able_count.as_limbs()[0] {
+            let addr = dispute.able_to_vote.get(U256::from(i));
+            if addr == judge_addr {
+                already_registered = true;
+                break;
+            }
+        }
+
+        (
+            is_registered_judge,
+            reputation,
+            enough_reputation,
+            dispute_exists,
+            waiting_for_judges,
+            already_registered,
+            able_count,
+        )
     }
     
     /// Execute dispute result - kept for backward compatibility, delegates to get_dispute_winner

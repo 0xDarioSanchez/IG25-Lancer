@@ -1,0 +1,59 @@
+[0;0m[90mBuilding project with Cargo.toml version: 0.1.9[0;0m
+   Compiling cfg-if v1.0.0
+   Compiling aho-corasick v1.1.2
+   Compiling alloy-sol-macro v0.7.6
+   Compiling crunchy v0.2.2
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.6
+   Compiling ruint v1.12.3
+   Compiling tiny-keccak v2.0.2
+   Compiling itoa v1.0.10
+   Compiling bytes v1.5.0
+   Compiling regex-syntax v0.8.2
+   Compiling hex-literal v0.4.1
+   Compiling alloy-primitives v0.7.6
+   Compiling digest v0.10.7
+   Compiling const-hex v1.11.0
+   Compiling keccak v0.1.5
+   Compiling unicode-segmentation v1.11.0
+   Compiling regex-automata v0.4.5
+   Compiling convert_case v0.6.0
+   Compiling sha3 v0.10.8
+   Compiling alloy-sol-types v0.7.6
+   Compiling lazy_static v1.4.0
+   Compiling mini-alloc v0.6.0
+   Compiling derivative v2.2.0
+   Compiling regex v1.10.3
+   Compiling keccak-const v0.2.0
+   Compiling hex v0.4.3
+   Compiling mini-alloc v0.4.2
+   Compiling dotenv v0.15.0
+   Compiling stylus-proc v0.6.0
+   Compiling stylus-sdk v0.6.0
+   Compiling lancer v0.1.9 (/home/dario/BC/IG/IG25-Lancer/packages/lancer)
+    Finished `release` profile [optimized] target(s) in 17.40s
+[0;0m[90mstripped custom section from user wasm to remove any sensitive data[0;0m
+[0;0m[90mcontract size: [33;1m20.5 KiB[0;0m[90m (20971 bytes)[0;0m
+[0;0m[90mwasm size: [38;5;48;1m69.8 KiB[0;0m[90m (71435 bytes)[0;0m
+[0;0m[90mFile used for deployment hash: ./Cargo.lock[0;0m
+[0;0m[90mFile used for deployment hash: ./Cargo.toml[0;0m
+[0;0m[90mFile used for deployment hash: ./examples/counter.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./rust-toolchain.toml[0;0m
+[0;0m[90mFile used for deployment hash: ./src/lib.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/main.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/marketplace/marketplace.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/marketplace/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/mocks/mock_usdc.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/mocks/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/protocol/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/protocol/protocol.rs[0;0m
+[0;0m[90mproject metadata hash computed on deployment: "fcc9b54e341a9783427684d3f4e1ea7fa830091d0cee29df2b92ffd9ab73363c"[0;0m
+[0;0m[90mstripped custom section from user wasm to remove any sensitive data[0;0m
+[0;0m[90mcontract size: [33;1m20.5 KiB[0;0m[90m (20971 bytes)[0;0m
+
+thread 'main' panicked at /home/dario/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cargo-stylus-0.6.3/src/deploy/mod.rs:42:10:
+cargo stylus check failed: no error payload received in response: Transport(Custom(reqwest::Error { kind: Request, url: "http://127.0.0.1:8547/", source: hyper_util::client::legacy::Error(Connect, ConnectError("tcp connect error", 127.0.0.1:8547, Os { code: 111, kind: ConnectionRefused, message: "Connection refused" })) }))
+
+Location:
+    /home/dario/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cargo-stylus-0.6.3/src/check.rs:176:17
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

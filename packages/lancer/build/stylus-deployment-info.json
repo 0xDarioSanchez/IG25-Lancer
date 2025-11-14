@@ -1,12 +1,12 @@
 {
   "protocol_contract": {
-    "address": "0xa513e6e4b8f2a923d98304ec87f64353c4d5c853"
+      "address": "0x9e545e3c0baab3e08cdfd552c960a1050f373042"
   },
   "marketplace_contract": {
-    "address": "0x8a791620dd6260079bf849dc5567adc3f2fdc318"
+      "address": "0xa82ff9afd8f496c3d6ac40e2a0f282e47488cfc9"
   },
   "usdc_contract": {
-    "address": "0xb7f8bc63bbcad18155201308c8f3540b07f84f5e"
+    "address": "0x1613beb3b2c4f22ee086b2b38c1476a3ce7f78e8"
   },
   "rpc_url": "http://127.0.0.1:8547",
   "chain_id": 412346

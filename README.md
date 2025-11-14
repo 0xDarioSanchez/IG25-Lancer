@@ -43,6 +43,15 @@ The marketplace consists of three main entities:
 - Protocol integration for judge assignment and voting
 - Winner receives escrowed funds minus marketplace fee
 
+#### Test Output
+
+After commit execution:
+![Commit](assets/commit.png)
+
+After reveal votes:
+![Reveal](assets/reveal.png)
+
+
 ### Technical Details
 
 - **Language**: Rust (Arbitrum Stylus)

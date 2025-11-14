@@ -1,0 +1,27 @@
+[0;0m[90mBuilding project with Cargo.toml version: 0.1.9[0;0m
+[0;0m[90mstripped custom section from user wasm to remove any sensitive data[0;0m
+[0;0m[90mcontract size: [33;1m20.5 KiB[0;0m[90m (20971 bytes)[0;0m
+[0;0m[90mwasm size: [38;5;48;1m69.8 KiB[0;0m[90m (71435 bytes)[0;0m
+[0;0m[90mFile used for deployment hash: ./Cargo.lock[0;0m
+[0;0m[90mFile used for deployment hash: ./Cargo.toml[0;0m
+[0;0m[90mFile used for deployment hash: ./examples/counter.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./rust-toolchain.toml[0;0m
+[0;0m[90mFile used for deployment hash: ./src/lib.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/main.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/marketplace/marketplace.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/marketplace/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/mocks/mock_usdc.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/mocks/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/protocol/mod.rs[0;0m
+[0;0m[90mFile used for deployment hash: ./src/protocol/protocol.rs[0;0m
+[0;0m[90mproject metadata hash computed on deployment: "fcc9b54e341a9783427684d3f4e1ea7fa830091d0cee29df2b92ffd9ab73363c"[0;0m
+[0;0m[90mstripped custom section from user wasm to remove any sensitive data[0;0m
+[0;0m[90mcontract size: [33;1m20.5 KiB[0;0m[90m (20971 bytes)[0;0m
+[0;0m[90mchecking whether the contract has a constructor...[0;0m
+[0;0m[90mdeployed code at address: [38;5;183;1m0x75e0e92a79880bd81a69f72983d03c75e2b33dc8[0;0m[0;0m
+[0;0m[90mdeployment tx hash: [38;5;183;1m0x30a3a995516567855bfbec0be197c303998c6bdff98867180ec765cfe8dbc0e9[0;0m[0;0m
+[0;0m[90mwasm already activated![0;0m
+
+[38;5;48;1mNOTE: We recommend running cargo stylus cache bid 75e0e92a79880bd81a69f72983d03c75e2b33dc8 0 to cache your activated contract in ArbOS.
+Cached contracts benefit from cheaper calls. To read more about the Stylus contract cache, see
+https://docs.arbitrum.io/stylus/how-tos/caching-contracts[0;0m

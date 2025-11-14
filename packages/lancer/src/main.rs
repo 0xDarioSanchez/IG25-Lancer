@@ -2,5 +2,5 @@
 
 #[cfg(feature = "export-abi")]
 fn main() {
-    lancer::mocks::mock_usdc::print_abi("Apache-2.0", "pragma solidity ^0.8.23;");
+    lancer::protocol::print_abi("Apache-2.0", "pragma solidity ^0.8.23;");
 }
