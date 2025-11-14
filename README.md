@@ -46,9 +46,11 @@ The marketplace consists of three main entities:
 #### Test Output
 
 After commit execution:
+
 ![Commit](assets/commit.png)
 
 After reveal votes:
+
 ![Reveal](assets/reveal.png)
 
 
