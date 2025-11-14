@@ -409,6 +409,8 @@ impl ProtocolContract {
         Ok(())
     }
     
+    // Old voting method - replaced by commit-reveal scheme
+    
     // /// Vote on a dispute
     // pub fn vote(&mut self, dispute_id: u64, support: bool) -> Result<(), ProtocolError> {
     //     let sender = msg::sender();

@@ -1,4 +1,4 @@
-# Lancer Marketplace - Arbitrum Stylus
+# Lancer Marketplace & Lancer Protocol - Arbitrum Stylus
 
 ## Overview
 
